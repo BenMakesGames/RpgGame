@@ -21,7 +21,9 @@ It's written using Blazor Server, a framework for making web apps in C#, without
    2. Type `dotnet run`, and press enter!
 4. In your browser, visit http://localhost:5083
 
-If all went well, you should see a simple page with Login and Sign Up buttons! If the instructions aren't quite clicking for you, I've also created a 12 minute video that walks through the process of getting PetGame up and running:
+If all went well, you should see a simple page with Login and Sign Up buttons!
+
+If the instructions aren't quite clicking for you, I've created a 12 minute video that walks through the process of getting PetGame up and running:
 
 * [Make a Browser Pet Game in C# ...](https://www.youtube.com/watch?v=jPzAvcCX2tk)
 
