@@ -10,15 +10,15 @@ It's written using Blazor Server, a framework for making web apps in C#, without
 
 ## Installing & Running
 
-1. Install an IDE! [Visual Studio](https://visualstudio.microsoft.com/downloads/), [Rider](https://www.jetbrains.com/rider/), or [vscode](https://code.visualstudio.com/) are three I've tried; others exist
-2. Download PetGame!
-   * The best way to do so is using the "Get from Version Control" option, or similar, in your IDE, using the URL `https://github.com/BenMakesGames/PetGame.git`. But if you can't figure that out, you can download a ZIP using the green "Code" button, above; unzip it wherever you like.
-3. Install .NET SDK 7.04, or later
+1. Install .NET SDK 7.04, or later
    * https://dotnet.microsoft.com/en-us/download/dotnet/7.0
-7. Run the game!
-   * With Visual Studio or Rider, run `PetGame.Server: http`, OR:
-   * With vscode, open a terminal in the `PetGame/PetGame` directory, and run `dotnet run`
-8. In your browser, visit http://localhost:5099
+2. Download PetGame!
+   * Download a ZIP using the green "Code" button, above; unzip it wherever you like.
+3. Run the game!
+   1. Open the `PetGame/PetGame` folder, and open a terminal/powershell windows there (in Windows, hold Shift and right-click on some empty space in the folder, and select "Open Powershell Window Here")
+      ![a picture showing how to open the powershell](!docs/open-powershell.png)
+   2. Type `dotnet run`, and press enter!
+4. In your browser, visit http://localhost:5083
 
 If all went well, you should see a simple page with Login and Sign up buttons!
 
@@ -33,6 +33,26 @@ PetGame leverages several open-source libraries to do some of its work. If you'r
 * [FluentValidation](https://docs.fluentvalidation.net/) and [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation), for validating user input
 
 ### Common Tasks
+
+#### Programming!
+
+You're going to need an IDE - an "Integrated Development Environment" (but no one ever actually calls it that). An IDE is text editor desigend to make programming easier. IDEs do simple things, like color the text in meaningful ways, cleverer things, like auto-complete bits of code for you, and advanced things, like let you pause your program at any point to see exactly what it's doing, measure the code's performance, and more.
+
+![a screenshot of Rider](!docs/rider-screenshot.png)
+
+You REALLY don't want to just use Notepad, or even Notepad++. There are a lot of IDEs out there, many with free options.
+
+Here are the most-popular ones for C# (the language PetGame is written in):
+* [Visual Studio](https://visualstudio.microsoft.com/downloads/)
+  * By the makers of C#, itself; always up to date with the latest additions to the C# language
+  * Free version available
+* [Rider](https://www.jetbrains.com/rider/) (seen in screenshot, above)
+  * Offers more features than Visual Studio, and is less buggy
+  * Must pay to continue using it after 30 days
+* [vscode](https://code.visualstudio.com/)
+  * General-purpose IDE; lacks some features available in Visual Studio and Rider
+  * Lower system requirements (Visual Studio and Rider can get slow)
+  * Free
 
 #### Adding Pages
 
