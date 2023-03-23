@@ -67,7 +67,11 @@ Here are the most-popular ones for C# (the language PetGame is written in):
 
 1. Using your IDE, right-click `PetGame/PetGame/Pages`, and create a new Razor Page
    * As the game grows, you may want to create folders within `PetGame/PetGame/Pages` to help organize things!
-1. If the page should only be accessible to logged-in players, add `@attribute [Authorize]` to the top of the file.
+1. If the page should only be accessible to logged-in players, add the following to the top of the file:
+   ```c#
+   @using Microsoft.AspNetCore.Authorization
+   @attribute [Authorize]
+   ```
 1. Look at an existing page to get an idea for how to make your own. `MyHouse.razor` is a good one to start with.
 
 #### Looking at or Modifying the Contents of the Database, Directly
