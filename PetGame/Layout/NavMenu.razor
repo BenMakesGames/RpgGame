@@ -3,7 +3,7 @@
     <div>
         <AuthorizeView>
             <Authorized>
-                Hello, ??? <button type="button" @onclick="DoLogOut">Logout</button>
+                Hello, @(CurrentPlayer.Info?.Name ?? "friend")! <button type="button" @onclick="DoLogOut">Logout</button>
             </Authorized>
             <NotAuthorized>
                 Hello, stranger!

@@ -38,11 +38,13 @@ public sealed class CurrentPlayer: AuthenticationStateProvider
         return new(true, "Successfully logged in.");
     }
     
-    public async Task LogOutAsync()
+    public Task LogOutAsync()
     {
         Info = null;
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        
+        return Task.CompletedTask;
     }
 
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
