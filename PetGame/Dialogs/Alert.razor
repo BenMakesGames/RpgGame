@@ -1,0 +1,24 @@
+﻿<div>
+    <div>
+        @Message
+    </div>
+    <p>
+        <button type="button" @onclick="Close">OK</button>
+    </p>
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter, EditorRequired] public required string Message { get; set; }
+
+    private async Task Close() => await BlazoredModal.CloseAsync();
+
+    public static void Show(IModalService modals, string title, string message)
+    {
+        var modalParameters = new ModalParameters();
+        modalParameters.Add(nameof(Alert.Message), message);
+
+        modals.Show<Alert>(title, modalParameters);
+    }
+}

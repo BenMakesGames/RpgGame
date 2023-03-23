@@ -1,0 +1,26 @@
+﻿@using PetGame.Services
+<header>
+    <div>
+        <AuthorizeView>
+            <Authorized>
+                Hello, ??? <button type="button" @onclick="DoLogOut">Logout</button>
+            </Authorized>
+            <NotAuthorized>
+                Hello, stranger!
+                <a class="button" href="/log-in">Login</a>
+                <a class="button" href="/sign-up">Sign up</a>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</header>
+
+@code {
+
+    [Inject] public CurrentPlayer CurrentPlayer { get; set; } = null!;
+
+    private async Task DoLogOut()
+    {
+        await CurrentPlayer.LogOutAsync();
+    }
+
+}

@@ -1,0 +1,11 @@
+header {
+    display: block;
+    background-color: #336699;
+    color: #fff;
+}
+
+header > div {
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 1rem;
+}

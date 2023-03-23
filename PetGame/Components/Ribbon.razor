@@ -1,0 +1,10 @@
+﻿<div class="ribbon">
+    <div style="background-color:@Color" class="left">&nbsp;</div>
+    <div style="background-color:@Color" class="right">&nbsp;</div>
+    <div style="background-color:@Color" class="label">@ChildContent</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = null!;
+    [Parameter, EditorRequired] public string Color { get; set; } = "";
+}

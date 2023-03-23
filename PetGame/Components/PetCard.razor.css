@@ -1,0 +1,32 @@
+﻿.pet {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+img {
+    display: block;
+    width: 80px;
+    margin: 0 auto 0.25rem;
+}
+
+.name {
+    text-align: center;
+    display: block;
+    background-color: cornflowerblue;
+    color: black;
+}
+
+.level {
+    font-size: 80%;
+    text-align: center;
+}
+
+.energy {
+    display: block;
+    margin: 0 auto;
+    background-color: gold;
+    border-radius: 3px;
+    padding: 0 0.5em;
+    font-size: 80%;
+}

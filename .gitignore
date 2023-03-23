@@ -1,0 +1,12 @@
+# popular IDE directories
+/.idea/
+/.vs/
+
+# compiled output
+obj/
+bin/
+
+# when using sqlite DB, these files will appear; they should not be committed to source control
+PetGame.db
+PetGame.db-shm
+PetGame.db-wal

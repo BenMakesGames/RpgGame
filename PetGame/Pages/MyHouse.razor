@@ -1,0 +1,120 @@
+﻿@using PetGame.Database
+@using PetGame.Services
+@using Microsoft.EntityFrameworkCore
+@using PetGame.Database.Tables
+@using PetGame.Dialogs
+
+@page "/my-house"
+@attribute [Authorize]
+
+<PageTitle>Pet Game - My House</PageTitle>
+
+<h1>My House</h1>
+
+@if (MyPets == null)
+{
+    <p><em>Loading pets...</em></p>
+}
+else
+{
+    <div class="pets">
+        @foreach (var pet in MyPets)
+        {
+            <div>
+                <PetCard
+                    Image="@pet.Image"
+                    Name="@pet.Name"
+                    Level="pet.Level"
+                    Energy="pet.Energy"
+                />
+                <button type="button" @onclick="() => DoFeed(pet)">Feed</button>
+                <button type="button" @onclick="() => DoExplore(pet)">Explore</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    [CascadingParameter] public IModalService Modals { get; set; } = null!;
+    [Inject] public IDbContextFactory<PetGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+
+    private List<Pet>? MyPets { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        
+        MyPets = await db.Pets
+            .Where(p => p.OwnerId == Player.Info!.Id)
+            .ToListAsync();
+    }
+
+    private async Task DoFeed(Pet pet)
+    {
+        if(pet.Energy >= 10)
+        {
+            Alert.Show(Modals, "Oops!", $"{pet.Name} is already at max energy.");
+            return;
+        }
+
+        pet.Energy = Math.Clamp(pet.Energy + 3, 0, 10);
+        
+        Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Energy} energy.");
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        db.Update(pet);
+        
+        await db.SaveChangesAsync();
+    }
+
+    private async Task DoExplore(Pet pet)
+    {
+        if(pet.Energy < 1)
+        {
+            Alert.Show(Modals, "Oops!", "Pet is out of energy!");
+            return;
+        }
+
+        pet.Energy--;
+
+        // TODO: make your own game! :P
+        var description = Random.Shared.Next(3) switch
+        {
+            1 => SomethingHappens(pet),
+            2 => SomethingAwesomeHappens(pet),
+            _ => NothingHappens(pet),
+        };
+
+        Alert.Show(Modals, "Explore Results", description);
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        db.Update(pet);
+        
+        await db.SaveChangesAsync();
+    }
+    
+    private static string SomethingHappens(Pet pet)
+    {
+        pet.GainExperience(4);
+
+        return "Your pet found something noteworthy! +4 experience points!";
+    }
+
+    private static string SomethingAwesomeHappens(Pet pet)
+    {
+        pet.GainExperience(10);
+
+        return "Your pet found something rad! +10 experience points!";
+    }
+
+    private static string NothingHappens(Pet pet)
+    {
+        pet.GainExperience(1);
+
+        return "Your pet went out, but didn't find anything... +1 experience point for the effort.";
+    }
+}
