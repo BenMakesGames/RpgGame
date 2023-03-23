@@ -84,16 +84,20 @@ The PetGame database is stored in a file called `PetGame.db`, which will appear 
 
 #### Adding a New Table to the Database
 
-It's not strictly necessary, but if you don't already have a tool for viewing databases, download and install [HeidiSQL](https://www.heidisql.com/download.php), and refer to the instructions above for how to connect to your PetGame database.
+**Required:** Install Entity Framework's command-line tools; run the following in a terminal/PowerShell window:
+
+```powershell
+dotnet tool install --global dotnet-ef
+```
+
+**Very recommended:** If you don't already have a tool for viewing databases, download and install [HeidiSQL](https://www.heidisql.com/download.php), and refer to the instructions in the previous section for how to connect to your PetGame database.
 
 ![looking at the Players table in HeidiSQL](!docs/database-viewer.png)
 
-While its possible to create tables using this tool, you shouldn't do so! PetGame is using Entity Framework to do "code-first database" design. Instead of creating or modifying tables by hand, you'll create them in code, and let Entity Framework create the table for you.
+While its possible to create tables using HeidiSQL, you shouldn't do so! PetGame is using [Entity Framework's "code-first"](https://entityframeworkcore.com/approach-code-first) approach for managing the database; instead of creating or modifying tables by hand, you'll create them in code, and let Entity Framework create the table for you.
 
 1. In your IDE, open `PetGame/Database/Tables`, and look at one of the tables.
-
 2. Let's make a new "InventoryItem" table to store items a player owns! Right-click on the "Tables" folder, and Add a new Class. Call it "InventoryItem".
-
 3. Edit the class to look like the following:
    ```c#
    namespace PetGame.Database.Tables;
@@ -109,7 +113,6 @@ While its possible to create tables using this tool, you shouldn't do so! PetGam
        public int SellValue { get; set; }
    }
    ```
-
    * `long OwnerId` will be used to store the id of the player who owns the item.
    * `Player? Owner` is optional: it won't actually appear in the database, but Entity Framework will use it to give you handy access to the owning player in code.
    * `string Image` will hold the filename of the graphic for the item
@@ -117,57 +120,46 @@ While its possible to create tables using this tool, you shouldn't do so! PetGam
    * `string Name` will hold the name of the item shown to players
    * `int FoodEnergy` is how much Energy a pet should gain if fed the item (items with 0 FoodEnergy aren't edible)
    * `int SellValue` is how much money a player should gain if selling the item
-
 4. One more code change to go! Open `PetGame/Database/PetGameDatabase.cs`. Near the top, there's a list of tables. This is the master list of tables in your database. Add a new line after the Pets and Players line:
    ```c#
    public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
    ```
-
 5. Now that your code knows about this new table, you just have to instruct Entity Framework to hook it all up! Open a terminal/PowerShell window in the `PetGame/PetGame` directory, and run:
    ```powershell
    dotnet ef migrations add CreateInventoryItemsTable
    ```
-
-   * The last bit - `CreateInventoryItemsTable` - can be anything you want; it's the name you're giving to this change. (Most "special characters" aren't allowed; keep it to letters and numbers just to be safe.)
-
+   * The last bit - `CreateInventoryItemsTable` - can be anything you want; it's the name you're giving to this change. (Most "special characters" aren't allowed, however; just keep it to letters and numbers.)
 6. Finally, run the game! After it starts up, press "F5" in HeidiSQL, and you'll see the new table has appeared!
 
-You can use HeidiSQL to cheat some items to your account.
+You can now use HeidiSQL to cheat some items into existence for your PetGame player:
 
-1. Click the "InventoryItems" table
+1. Click the "InventoryItems" table in HeidiSQL
 2. Click the "Data" tab near the top of the window
 3. Right-click somewhere in the empty area on the right, and select "Insert row"
 4. Fill in the details (for OwnerId, if you created an account, you're probably user 1, so enter 1!)
 
-You'll probably want to be able to see these items along with your pets. I'm going to leave that to you to figure out, but if you see how `PetGame/Pages/MyHouse.razor` loads and displays your pets, you should be able to use that as a basis for loading and displaying inventory items, too!
+Now you'll probably want to be able to see these items in game! I'm going to leave that to you to figure out, but if you see how `PetGame/Pages/MyHouse.razor` loads and displays your pets, you should be able to use that as a basis for loading and displaying inventory items, too!
 
 #### Adding (or Removing) Columns from an Existing Table
 
-If you created a new `InventoryItem` table using the instructions above, you may recall we added a `SellValue` to the items... but the game doesn't even allow players to have money, yet!
+If you created a new `InventoryItem` table using the instructions above, you may recall we added a `SellValue` to the items... but the game doesn't even allow players to have money! Let's fix that!
 
 1. Open `PetGame/Database/Tables/Player.cs`
-
 2. Add a new line below the `SignUpDate` as follows:
    ```c#
    public int Money { get; set; }
    ```
-
    * If you'd like new players to start with some moneys, add the starting value at the end of the line; for example:
      ```c#
      public int Money { get; set; } = 10; // players start with 10 money
      ```
-
 3. Open a terminal/PowerShell window in the `PetGame/PetGame` directory, and run:
-
    ```powershell
    dotnet ef migrations add AddMoneyToPlayers
    ```
-
    * Again, you can replace `AddMoneyToPlayers` with whatever you want; its a name used to describe the changes.
-
-4. Finally, run the game! After it starts up, check out the Player table in HeidiSQL; a Money column will have appeared.
-
-   * Note that if you chose a default value for Moneys, existing players won't get it! There are ways to fix that; Google or ask ChatGPT about "custom SQL in Entity Framework migrations".
+4. Finally, run the game! After it starts up, check out the Player table in HeidiSQL; a "Money" column will have appeared.
+   * Note that if you chose a default value for Money, existing players won't get it! There are ways to fix that; Google or ask ChatGPT about "custom SQL in Entity Framework migrations".
 
 How to display a player's Moneys, or alter it, I'll leave to you. One place to start might be making one of the pet "Explore" actions grant money to the player. If you're feeling ready for a bigger challenge, you could try making a new `GroceryStore.razor` page for players to buy items from!
 
