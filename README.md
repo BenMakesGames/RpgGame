@@ -165,4 +165,4 @@ How to display a player's Moneys, or alter it, I'll leave to you. One place to s
 
 ### Deploying Your Game!
 
-**TODO:** I'll add instructions on deploying your game to the internet later. In the meanwhile, Google around for how to deploy a "hosted Blazor WASM" web app; there's info out there!
+**TODO:** I'll add instructions on deploying your game to the internet later. In the meanwhile, Google around for how to "deploy a Blazor Server web app"; there's info out there!
