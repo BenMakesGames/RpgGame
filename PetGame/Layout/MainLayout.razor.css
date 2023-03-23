@@ -2,4 +2,7 @@ main {
     margin: 0 auto;
     max-width: 800px;
     padding: 1rem;
+    background-color: #fff;
+    min-height: calc(100vh - 4rem);
+    box-sizing: border-box;
 }
