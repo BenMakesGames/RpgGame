@@ -21,7 +21,9 @@ It's written using Blazor Server, a framework for making web apps in C#, without
    2. Type `dotnet run`, and press enter!
 4. In your browser, visit http://localhost:5083
 
-If all went well, you should see a simple page with Login and Sign up buttons!
+If all went well, you should see a simple page with Login and Sign Up buttons! If the instructions aren't quite clicking for you, I've also created a 12 minute video that walks through the process of getting PetGame up and running:
+
+* [Make a Browser Pet Game in C# ...](https://www.youtube.com/watch?v=jPzAvcCX2tk)
 
 ## Developing
 
@@ -32,6 +34,10 @@ PetGame leverages several open-source libraries to do some of its work. If you'r
 * [Entity Framework](https://learn.microsoft.com/en-us/aspnet/entity-framework), for storing data in a database
 * [Blazored.Modal](https://blazored.github.io/Modal/), for displaying modals
 * [FluentValidation](https://docs.fluentvalidation.net/) and [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation), for validating user input
+
+I've created a 40 minute that takes you through a tour of parts of the code, and some useful programming tools; at the end of the video, you'll have created a way to recruit more pets in PetGame:
+
+* [Keep Making a Browser Pet Game in C# ...](https://www.youtube.com/watch?v=rqTaw6BKRLM)
 
 ### Common Tasks
 
