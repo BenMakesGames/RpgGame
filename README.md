@@ -16,7 +16,7 @@ It's written using Blazor Server, a framework for making web apps in C#, without
 2. Download PetGame!
    * Download a ZIP using the green "Code" button, above; unzip it wherever you like.
 3. Run the game!
-   1. Open the `PetGame/PetGame` folder, and open a terminal/powershell windows there (in Windows, hold Shift and right-click on some empty space in the folder, and select "Open Powershell Window Here")
+   1. Open the `PetGame/PetGame` folder, and open a terminal/PowerShell window there (in Windows, hold Shift and right-click on some empty space in the folder, and select "Open PowerShell window here")
       ![a picture showing how to open the powershell](!docs/open-powershell.png)
    2. Type `dotnet run`, and press enter!
 4. In your browser, visit http://localhost:5083
@@ -80,10 +80,97 @@ When getting started with PetGame, which uses Sqlite, [HeidiSQL](https://www.hei
 
 The PetGame database is stored in a file called `PetGame.db`, which will appear in the `PetGame/PetGame` directory the first time you run the game. You can open this file with HeidiSQL to view the database, and edit its contents.
 
+![screenshot showing how to connect to your PetGame database with HeidiSQL](!docs/connecting-with-heidisql.png)
+
 #### Adding a New Table to the Database
 
-**TODO:** I'll add more instructions on this later.
+It's not strictly necessary, but if you don't already have a tool for viewing databases, download and install [HeidiSQL](https://www.heidisql.com/download.php), and refer to the instructions above for how to connect to your PetGame database.
 
-## Deploying Your Game!
+![looking at the Players table in HeidiSQL](!docs/database-viewer.png)
+
+While its possible to create tables using this tool, you shouldn't do so! PetGame is using Entity Framework to do "code-first database" design. Instead of creating or modifying tables by hand, you'll create them in code, and let Entity Framework create the table for you.
+
+1. In your IDE, open `PetGame/Database/Tables`, and look at one of the tables.
+
+2. Let's make a new "InventoryItem" table to store items a player owns! Right-click on the "Tables" folder, and Add a new Class. Call it "InventoryItem".
+
+3. Edit the class to look like the following:
+   ```c#
+   namespace PetGame.Database.Tables;
+   
+   public sealed class InventoryItem: PetGameTable
+   {
+       public required long OwnerId { get; set; }
+       public Player? Owner { get; set; }
+   
+       public required string Image { get; set; }
+       public required string Name { get; set; }
+       public int FoodEnergy { get; set; }
+       public int SellValue { get; set; }
+   }
+   ```
+
+   * `long OwnerId` will be used to store the id of the player who owns the item.
+   * `Player? Owner` is optional: it won't actually appear in the database, but Entity Framework will use it to give you handy access to the owning player in code.
+   * `string Image` will hold the filename of the graphic for the item
+     * You might want to create an item image or two, and put them in `PetGame/wwwroot/images/items`
+   * `string Name` will hold the name of the item shown to players
+   * `int FoodEnergy` is how much Energy a pet should gain if fed the item (items with 0 FoodEnergy aren't edible)
+   * `int SellValue` is how much money a player should gain if selling the item
+
+4. One more code change to go! Open `PetGame/Database/PetGameDatabase.cs`. Near the top, there's a list of tables. This is the master list of tables in your database. Add a new line after the Pets and Players line:
+   ```c#
+   public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
+   ```
+
+5. Now that your code knows about this new table, you just have to instruct Entity Framework to hook it all up! Open a terminal/PowerShell window in the `PetGame/PetGame` directory, and run:
+   ```powershell
+   dotnet ef migrations add CreateInventoryItemsTable
+   ```
+
+   * The last bit - `CreateInventoryItemsTable` - can be anything you want; it's the name you're giving to this change. (Most "special characters" aren't allowed; keep it to letters and numbers just to be safe.)
+
+6. Finally, run the game! After it starts up, press "F5" in HeidiSQL, and you'll see the new table has appeared!
+
+You can use HeidiSQL to cheat some items to your account.
+
+1. Click the "InventoryItems" table
+2. Click the "Data" tab near the top of the window
+3. Right-click somewhere in the empty area on the right, and select "Insert row"
+4. Fill in the details (for OwnerId, if you created an account, you're probably user 1, so enter 1!)
+
+You'll probably want to be able to see these items along with your pets. I'm going to leave that to you to figure out, but if you see how `PetGame/Pages/MyHouse.razor` loads and displays your pets, you should be able to use that as a basis for loading and displaying inventory items, too!
+
+#### Adding (or Removing) Columns from an Existing Table
+
+If you created a new `InventoryItem` table using the instructions above, you may recall we added a `SellValue` to the items... but the game doesn't even allow players to have money, yet!
+
+1. Open `PetGame/Database/Tables/Player.cs`
+
+2. Add a new line below the `SignUpDate` as follows:
+   ```c#
+   public int Money { get; set; }
+   ```
+
+   * If you'd like new players to start with some moneys, add the starting value at the end of the line; for example:
+     ```c#
+     public int Money { get; set; } = 10; // players start with 10 money
+     ```
+
+3. Open a terminal/PowerShell window in the `PetGame/PetGame` directory, and run:
+
+   ```powershell
+   dotnet ef migrations add AddMoneyToPlayers
+   ```
+
+   * Again, you can replace `AddMoneyToPlayers` with whatever you want; its a name used to describe the changes.
+
+4. Finally, run the game! After it starts up, check out the Player table in HeidiSQL; a Money column will have appeared.
+
+   * Note that if you chose a default value for Moneys, existing players won't get it! There are ways to fix that; Google or ask ChatGPT about "custom SQL in Entity Framework migrations".
+
+How to display a player's Moneys, or alter it, I'll leave to you. One place to start might be making one of the pet "Explore" actions grant money to the player. If you're feeling ready for a bigger challenge, you could try making a new `GroceryStore.razor` page for players to buy items from!
+
+### Deploying Your Game!
 
 **TODO:** I'll add instructions on deploying your game to the internet later. In the meanwhile, Google around for how to deploy a "hosted Blazor WASM" web app; there's info out there!
