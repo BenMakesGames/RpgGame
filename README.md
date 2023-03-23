@@ -4,7 +4,7 @@
 
 PetGame is a skeleton project for making your own pet game! (Or any browser-based game, really.)
 
-It's written using Blazor Server, a framework for making web apps in C#, without JavaScript.
+It's written using Blazor Server, a framework for making web apps in C#.
 
 [![Buy Me a Coffee at ko-fi.com](https://raw.githubusercontent.com/BenMakesGames/AssetsForNuGet/main/buymeacoffee.png)](https://ko-fi.com/A0A12KQ16)
 
