@@ -45,7 +45,7 @@
 
 @code {
 
-    [Inject] public PetGameDatabase Database { get; set; } = null!;
+    [Inject] public IDbContextFactory<PetGameDatabase> DbFactory { get; set; } = null!;
     [Inject] public CurrentPlayer Player { get; set; } = null!;
     [Inject] public NavigationManager Navigator { get; set; } = null!;
 
@@ -55,7 +55,9 @@
 
     private async Task DoSignUp()
     {
-        if(await Database.Players.AnyAsync(p => p.EmailAddress == FormData.EmailAddress))
+        await using var database = await DbFactory.CreateDbContextAsync();
+        
+        if(await database.Players.AnyAsync(p => p.EmailAddress == FormData.EmailAddress))
         {
             Alert.Show(Modals, "Sorry :(", "That email address is already in use!");
             return;
@@ -77,10 +79,10 @@
             Owner = player
         };
 
-        Database.Add(player);
-        Database.Add(pet);
+        database.Add(player);
+        database.Add(pet);
 
-        await Database.SaveChangesAsync();
+        await database.SaveChangesAsync();
 
         var logInResult = await Player.LogInAsync(FormData.EmailAddress, FormData.Password);
 

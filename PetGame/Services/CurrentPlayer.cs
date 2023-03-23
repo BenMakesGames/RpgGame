@@ -9,16 +9,18 @@ public sealed class CurrentPlayer: AuthenticationStateProvider
 {
     public CurrentPlayerData? Info { get; private set; }
 
-    private PetGameDatabase Database { get; }
+    private IDbContextFactory<PetGameDatabase> DbFactory { get; }
 
-    public CurrentPlayer(PetGameDatabase database)
+    public CurrentPlayer(IDbContextFactory<PetGameDatabase> dbFactory)
     {
-        Database = database;
+        DbFactory = dbFactory;
     }
 
     public async Task<LogInResult> LogInAsync(string emailAddress, string password, CancellationToken ct = default)
     {
-        var player = await Database.Players.FirstOrDefaultAsync(p => p.EmailAddress == emailAddress, ct);
+        await using var database = await DbFactory.CreateDbContextAsync(ct);
+        
+        var player = await database.Players.FirstOrDefaultAsync(p => p.EmailAddress == emailAddress, ct);
 
         if(player == null || !Security.PasswordsMatch(password, player.Password))
             return new LogInResult(false, "Email address and/or password is not correct.");
@@ -28,7 +30,7 @@ public sealed class CurrentPlayer: AuthenticationStateProvider
         {
             player.Password = Security.HashPassword(password);
 
-            await Database.SaveChangesAsync(ct);
+            await database.SaveChangesAsync(ct);
         }
         
         Info = new CurrentPlayerData(player.Id, player.Name);
