@@ -38,7 +38,7 @@ PetGame leverages several open-source libraries to do some of its work. If you'r
 * [Blazored.Modal](https://blazored.github.io/Modal/), for displaying modals
 * [FluentValidation](https://docs.fluentvalidation.net/) and [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation), for validating user input
 
-I've created a 40 minute that takes you through a tour of parts of the code, and some useful programming tools; at the end of the video, you'll have created a way to recruit more pets in PetGame:
+I've created a 40 minute video that goes through some of the code, and some useful programming tools; at the end of the video, we add a way for PetGame players to recruit more pets:
 
 * [Keep Making a Browser Pet Game in C# ...](https://www.youtube.com/watch?v=rqTaw6BKRLM)
 
