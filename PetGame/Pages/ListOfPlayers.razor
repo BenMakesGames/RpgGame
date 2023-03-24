@@ -1,0 +1,48 @@
+﻿@page "/players"
+@using PetGame.Database.Tables
+@using PetGame.Database
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Pet Game - Players</PageTitle>
+
+<h1>Players</h1>
+
+@if(AllPlayers == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table>
+        <thead>
+        <tr>
+            <th style="width:120px;">Name</th>
+            <th>Sign Up Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach(var player in AllPlayers)
+        {
+            <tr>
+                <td>@player.Name</td>
+                <td>@player.SignUpDate.ToString("MMMM dd, yyyy")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+
+    [Inject] private PetGameDatabase Database { get; set; } = null!;
+    
+    public List<Player>? AllPlayers { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        AllPlayers = await Database.Players
+            .Take(20)
+            .ToListAsync();
+    }
+
+}

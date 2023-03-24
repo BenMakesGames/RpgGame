@@ -55,3 +55,20 @@ label {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+table {
+    border-collapse: collapse;
+}
+
+td, th {
+    padding: 0.5em 1em;
+}
+
+thead th {
+    border-bottom: 1px solid #999;
+    text-align: left;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ddd;
+}
