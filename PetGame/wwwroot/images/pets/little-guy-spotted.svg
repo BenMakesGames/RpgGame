@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+ <path d="m12.894 24.401s-5.1328 7.5642-9.4552 4.8627c-5.2117-3.2573-0.3602-7.3841 1.9811-5.3129 2.3413 2.0711 0.27015 3.602-0.81044 2.8816-1.0806-0.7204-0.90049-1.6209-0.90049-1.6209" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1.1864"/>
+ <path d="m24.745 28.075s7.8391-10.895 3.4545-16.608c-4.3846-5.7133-2.7902-11.692-4.2517-9.965-1.4615 1.7273-5.979 4.2517-9.5664 1.4615s-3.8531-3.1888-2.9231 0.93007c0.93007 4.1189-4.3846 6.5105-4.1189 12.888 0.26573 6.3776 4.5175 10.762 4.5175 10.762s0.26573 3.5874 3.1888 3.8531c2.9231 0.26573 1.4615-3.5874 3.5874-3.4545 2.1259 0.13287 0.66433 3.0559 2.9231 3.1888 2.2587 0.13287 3.1888-3.0559 3.1888-3.0559z" fill="#d2b55e" stroke="#000" stroke-linecap="round" stroke-width="1.1864"/>
+ <circle cx="13.165" cy="10.444" r="1.6209"/>
+ <circle cx="23.16" cy="9.8132" r="1.6209"/>
+ <path d="m16.677 12.605s0.3602 1.801 2.1612 1.801 1.5308-2.0711 1.5308-2.0711" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1.1864"/>
+ <ellipse cx="18.856" cy="21.698" rx="4.0207" ry="4.5059" fill="#e6d6a6"/>
+ <g>
+  <circle cx="7.9028" cy="15.59" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="9.9325" cy="13.517" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="8.8961" cy="17.404" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="11.185" cy="19.001" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="28.632" cy="18.742" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="27.595" cy="14.51" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="26.127" cy="20.945" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="26.343" cy="24.14" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="27.293" cy="11.271" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="9.587" cy="20.167" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="10.148" cy="23.622" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="11.962" cy="25.565" r=".8637" style="paint-order:markers fill stroke"/>
+  <circle cx="10.839" cy="21.42" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="12.265" cy="23.536" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="10.278" cy="16.065" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="9.5007" cy="11.53" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="27.379" cy="16.626" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="25.609" cy="18.829" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="27.12" cy="19.649" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="24.831" cy="23.233" r=".47503" style="paint-order:markers fill stroke"/>
+  <circle cx="24.399" cy="26.127" r=".47503" style="paint-order:markers fill stroke"/>
+ </g>
+</svg>

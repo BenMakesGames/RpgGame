@@ -32,6 +32,11 @@ else
             </div>
         }
     </div>
+    
+    <h5>Actions</h5>
+    <p>
+        <button type="button" @onclick="() => DoBreed()">Breed</button>
+    </p>
 }
 
 @code {
@@ -49,6 +54,14 @@ else
         MyPets = await db.Pets
             .Where(p => p.OwnerId == Player.Info!.Id)
             .ToListAsync();
+    }
+
+    private async Task DoBreed()
+    {
+        if(MyPets == null)
+            return;
+        
+        SelectPetsForBreeding.Show(Modals, MyPets);
     }
 
     private async Task DoFeed(Pet pet)

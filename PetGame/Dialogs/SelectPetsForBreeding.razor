@@ -1,0 +1,95 @@
+﻿@using PetGame.Database.Tables
+@using PetGame.Database
+@using Microsoft.EntityFrameworkCore
+<div>
+    <div>
+        <table>
+            <tbody>
+            @foreach(var pet in Pets)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" @onclick="() => TogglePet(pet)" checked="@(SelectedPets.Contains(pet))" />
+                    </td>
+                    <td>
+                        <img src="/images/pets/@(pet.Image).svg" />
+                    </td>
+                    <td>
+                        @pet.Name
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <p>
+        <button type="button" @onclick="() => Close()">Cancel</button>        
+        <button type="button" @onclick="() => DoBreed()" disabled="@(SelectedPets.Count != 2)">Breed</button>
+    </p>
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Inject] public IDbContextFactory<PetGameDatabase> DbFactory { get; set; } = null!;
+
+    [Parameter] public List<Pet> Pets { get; set; } = default!;
+
+    public List<Pet> SelectedPets { get; set; } = new();
+
+    private async Task Close() => await BlazoredModal.CloseAsync();
+
+    public void TogglePet(Pet pet)
+    {
+        if(SelectedPets.Contains(pet))
+            SelectedPets.Remove(pet);
+        else
+        {
+            if(SelectedPets.Count == 2)
+                SelectedPets.RemoveAt(0);
+            
+            SelectedPets.Add(pet);
+        }
+    }
+    
+    public async Task DoBreed()
+    {
+        var percent = Random.Shared.Next(100);
+        string image;
+
+        if(percent < 40)
+            image = SelectedPets[0].Image;
+        else if(percent < 80)
+            image = SelectedPets[1].Image;
+        else
+        {
+            image = Random.Shared.Next(3) switch {
+                0 => "little-guy",
+                1 => "little-guy-tiger",
+                2 => "little-guy-spotted"
+            };
+        }
+
+        var baby = new Pet()
+        {
+            Image = image,
+            Name = "Baby",
+            OwnerId = SelectedPets[0].OwnerId
+        };
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+        
+        db.Add(baby);
+        await db.SaveChangesAsync();
+
+        await BlazoredModal.CloseAsync();
+    }
+    
+    public static void Show(IModalService modals, List<Pet> pets)
+    {
+        var modalParameters = new ModalParameters();
+        modalParameters.Add(nameof(Pets), pets);
+
+        modals.Show<SelectPetsForBreeding>("Select Two Pets to Breed", modalParameters);
+    }
+}
