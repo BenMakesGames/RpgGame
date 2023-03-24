@@ -1,11 +1,15 @@
 header {
     display: block;
-    background-color: #336699;
+    background-color: #225588;
     color: #fff;
+    position: sticky;
+    top: 0;
 }
 
 header > div {
     margin: 0 auto;
     max-width: 800px;
     padding: 1rem;
+    background-color: #336699;
+    box-sizing: border-box;
 }
