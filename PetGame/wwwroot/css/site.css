@@ -11,6 +11,11 @@ body {
     background-color: #eee;
 }
 
+button, input, textarea, select, option {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1em;
+}
+
 button,.button,input[type=button],input[type=submit],input[type=reset]
 {
     display: inline-block;
