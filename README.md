@@ -12,7 +12,7 @@ It's written using Blazor Server, a framework for making web apps in C#.
 
 1. Install .NET SDK 7
    * https://dotnet.microsoft.com/en-us/download/dotnet/7.0
-   * Download the "x64" version of the SDK; Windows and Mac downloads are available
+   * Download the "x64" version of the installer; Windows and Mac downloads are available
      ![screenshot of .NET download page, with 64-bit downloads highlighted](!docs/dotnet-download.png)
 2. Download PetGame!
    * Download a ZIP using the green "Code" button, above; unzip it wherever you like.
