@@ -34,6 +34,10 @@ else
     </div>
 }
 
+<ul>
+    <li><a href="/pet-store">Visit the pet store</a></li>
+</ul>
+
 @code {
 
     [CascadingParameter] public IModalService Modals { get; set; } = null!;
@@ -83,37 +87,59 @@ else
         // TODO: make your own game! :P
         var description = Random.Shared.Next(3) switch
         {
-            1 => SomethingHappens(pet),
-            2 => SomethingAwesomeHappens(pet),
-            _ => NothingHappens(pet),
+            1 => await SomethingHappens(pet),
+            2 => await FoundSomeMoney(pet),
+            _ => await NothingHappens(pet),
         };
 
         Alert.Show(Modals, "Explore Results", description);
+    }
+    
+    private async Task<string> SomethingHappens(Pet pet)
+    {
+        pet.GainExperience(4);
 
         await using var db = await DbFactory.CreateDbContextAsync();
 
         db.Update(pet);
         
         await db.SaveChangesAsync();
-    }
-    
-    private static string SomethingHappens(Pet pet)
-    {
-        pet.GainExperience(4);
 
         return "Your pet found something noteworthy! +4 experience points!";
     }
 
-    private static string SomethingAwesomeHappens(Pet pet)
+    private async Task<string> FoundSomeMoney(Pet pet)
     {
-        pet.GainExperience(10);
+        pet.GainExperience(2);
 
-        return "Your pet found something rad! +10 experience points!";
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var petOwner = await db.Players.FindAsync(pet.OwnerId);
+
+        if(petOwner == null)
+            return "Error: pet owner not found.";
+        
+        var money = Random.Shared.Next(6, 11);
+        
+        petOwner.Money += money;
+
+        db.Update(pet);
+        db.Update(petOwner);
+        
+        await db.SaveChangesAsync();
+
+        return $"Your pet found {money} money! (Good job! +2 experience points!)";
     }
 
-    private static string NothingHappens(Pet pet)
+    private async Task<string> NothingHappens(Pet pet)
     {
         pet.GainExperience(1);
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        db.Update(pet);
+        
+        await db.SaveChangesAsync();
 
         return "Your pet went out, but didn't find anything... +1 experience point for the effort.";
     }

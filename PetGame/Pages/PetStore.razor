@@ -1,0 +1,69 @@
+﻿@page "/pet-store"
+@using PetGame.Database
+@using Microsoft.EntityFrameworkCore
+@using PetGame.Database.Tables
+@using PetGame.Services
+
+<PageTitle>Pet Game - Pet Store</PageTitle>
+
+<h1>Pet Store</h1>
+
+@if(PlayerMoney >= 10)
+{
+    <p>"Hi! Care to buy a pet? They cost 10 moneys each! You have @PlayerMoney."</p>
+
+    <p>
+        <button @onclick="() => DoBuyPet()">Buy (10 moneys)</button>
+    </p>
+}
+else
+{
+    <p>"Hi! Care to buy a pet? They cost 10 moneys each... oh, but I see you only have @PlayerMoney..."</p>
+}
+
+@code {
+
+    [Inject] public IDbContextFactory<PetGameDatabase> DatabaseFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer CurrentPlayer { get; set; } = null!;
+
+    public int PlayerMoney { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var db = await DatabaseFactory.CreateDbContextAsync();
+
+        PlayerMoney = await db.Players
+            .Where(p => p.Id == CurrentPlayer.Info!.Id)
+            .Select(p => p.Money)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task DoBuyPet()
+    {
+        await using var db = await DatabaseFactory.CreateDbContextAsync();
+
+        var player = await db.Players.FindAsync(CurrentPlayer.Info!.Id);
+
+        if(player == null)
+            return;
+        
+        if(player.Money < 10)
+            return;
+        
+        player.Money -= 10;
+
+        var pet = new Pet()
+        {
+            Name = "New Pet",
+            Image = "little-guy",
+            OwnerId = player.Id,
+        };
+
+        db.Add(pet);
+        db.Update(player);
+        
+        await db.SaveChangesAsync();
+
+        PlayerMoney = player.Money;
+    }
+}
