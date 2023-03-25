@@ -5,6 +5,8 @@
 @using PetGame.Dialogs
 
 @page "/my-house"
+@page "/my-house/{CurrentPage:int}"
+
 @attribute [Authorize]
 
 <PageTitle>Pet Game - My House</PageTitle>
@@ -32,6 +34,12 @@ else
             </div>
         }
     </div>
+    
+    <p>
+        <a href="/my-house/@(CurrentPage - 1)">Previous</a>
+        <strong>@CurrentPage</strong>
+        <a href="/my-house/@(CurrentPage + 1)">Next</a>
+    </p>
 }
 
 @code {
@@ -42,14 +50,45 @@ else
 
     private List<Pet>? MyPets { get; set; }
 
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    public const int PageSize = 10;
+
     protected override async Task OnInitializedAsync()
+    {
+        await LoadPets();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadPets();
+    }
+
+    private async Task LoadPets()
     {
         await using var db = await DbFactory.CreateDbContextAsync();
         
+        var totalPets = await db.Pets
+            .CountAsync(p => p.OwnerId == Player.Info!.Id);
+
+        if(totalPets == 0)
+        {
+            MyPets = new List<Pet>();
+            Alert.Show(Modals, "Oops!", "You don't have any pets yet!");
+            return;
+        }
+        
+        var lastPage = (int)Math.Ceiling(totalPets / (decimal)PageSize);
+        
+        CurrentPage = Math.Clamp(CurrentPage, 1, lastPage);
+        
         MyPets = await db.Pets
+            .Skip((CurrentPage - 1) * PageSize)
+            .Take(PageSize)
             .Where(p => p.OwnerId == Player.Info!.Id)
             .ToListAsync();
     }
+    
+    
 
     private async Task DoFeed(Pet pet)
     {
