@@ -23,7 +23,7 @@ builder.Services.Configure<RazorPagesOptions>(options =>
 
 builder.Services.AddDbContextFactory<PetGameDatabase>(options =>
 {
-    var connectionString = "server=localhost;port=4406;database=petgame;user=root;password=b0ar!!;";
+    var connectionString = "server=localhost;port=3306;database=petgame;user=root;password=YOURPASSWORDHERE;";
     
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
