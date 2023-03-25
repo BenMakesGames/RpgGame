@@ -23,10 +23,8 @@ builder.Services.Configure<RazorPagesOptions>(options =>
 
 builder.Services.AddDbContextFactory<PetGameDatabase>(options =>
 {
-    // TODO: it's up to you to set up and configure a real database!
-    // Sqlite is convenient to use when working on the game, on just your computer, but when it's time to deploy the
-    // game to the internet, you'll need to use something more powerful, like PostgreSQL, MariaDB, or MySQL.
-    options.UseSqlite("Data Source=PetGame.db;Cache=Shared");
+    // connect to a postgresql database
+    options.UseNpgsql("Server=localhost;Port=5432;Database=petgame;User Id=postgres;Password=YOURPASSWORDHERE");
 });
 
 var app = builder.Build();
