@@ -1,4 +1,4 @@
-﻿namespace PetGame.Services;
+﻿namespace PetGame.Functions;
 
 public static class Security
 {
