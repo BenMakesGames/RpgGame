@@ -66,7 +66,7 @@ else
     private async Task LoadPets()
     {
         await using var db = await DbFactory.CreateDbContextAsync();
-        
+
         var totalPets = await db.Pets
             .CountAsync(p => p.OwnerId == Player.Info!.Id);
 
@@ -99,13 +99,13 @@ else
         }
 
         pet.Energy = Math.Clamp(pet.Energy + 3, 0, 10);
-        
+
         Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Energy} energy.");
 
         await using var db = await DbFactory.CreateDbContextAsync();
 
         db.Update(pet);
-        
+
         await db.SaveChangesAsync();
     }
 
@@ -122,9 +122,9 @@ else
         // TODO: make your own game! :P
         var description = Random.Shared.Next(3) switch
         {
-            1 => SomethingHappens(pet),
-            2 => SomethingAwesomeHappens(pet),
-            _ => NothingHappens(pet),
+            1 => await SomethingHappens(pet),
+            2 => await SomethingAwesomeHappens(pet),
+            _ => await NothingHappens(pet),
         };
 
         Alert.Show(Modals, "Explore Results", description);
@@ -132,25 +132,25 @@ else
         await using var db = await DbFactory.CreateDbContextAsync();
 
         db.Update(pet);
-        
+
         await db.SaveChangesAsync();
     }
-    
-    private static string SomethingHappens(Pet pet)
+
+    private async Task<string> SomethingHappens(Pet pet)
     {
         pet.GainExperience(4);
 
         return "Your pet found something noteworthy! +4 experience points!";
     }
 
-    private static string SomethingAwesomeHappens(Pet pet)
+    private async Task<string> SomethingAwesomeHappens(Pet pet)
     {
         pet.GainExperience(10);
 
         return "Your pet found something rad! +10 experience points!";
     }
 
-    private static string NothingHappens(Pet pet)
+    private async Task<string> NothingHappens(Pet pet)
     {
         pet.GainExperience(1);
 
