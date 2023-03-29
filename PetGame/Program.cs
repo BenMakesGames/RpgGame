@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,11 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredModal();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 
 // if you add a new class in Services that you want to be able to [Inject], or use in other services,
 // register it here:
 builder.Services.AddScoped<CurrentPlayer>();
+builder.Services.AddScoped<RememberMe>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CurrentPlayer>());
 // builder.Services.AddScoped<MyCustomService>();
 
