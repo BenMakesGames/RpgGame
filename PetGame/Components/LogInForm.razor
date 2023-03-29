@@ -28,6 +28,7 @@
     [CascadingParameter] public IModalService Modals { get; set; } = null!;
     [Inject] public CurrentPlayer Player { get; set; } = null!;
     [Inject] public NavigationManager Navigator { get; set; } = null!;
+    [Inject] public RememberMe RememberMe { get; set; } = null!;
 
     private LogInData FormData { get; } = new();
 
@@ -40,6 +41,8 @@
             Alert.Show(Modals, "No Good!", result.Message);
             return;
         }
+
+        await RememberMe.Remember(FormData.EmailAddress, FormData.Password);
 
         Navigator.NavigateTo("/my-house");
     }

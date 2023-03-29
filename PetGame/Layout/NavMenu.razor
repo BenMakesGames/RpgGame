@@ -17,9 +17,11 @@
 @code {
 
     [Inject] public CurrentPlayer CurrentPlayer { get; set; } = null!;
+    [Inject] public RememberMe RememberMe { get; set; } = null!;
 
     private async Task DoLogOut()
     {
+        await RememberMe.Forget();
         await CurrentPlayer.LogOutAsync();
     }
 
