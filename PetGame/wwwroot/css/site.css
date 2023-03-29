@@ -1,3 +1,7 @@
+html {
+    --content-width: 800px;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;

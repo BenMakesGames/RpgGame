@@ -49,7 +49,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await using var db = await DbFactory.CreateDbContextAsync();
-        
+
         MyPets = await db.Pets
             .Where(p => p.OwnerId == Player.Info!.Id)
             .ToListAsync();
@@ -64,13 +64,13 @@ else
         }
 
         pet.Energy = Math.Clamp(pet.Energy + 3, 0, 10);
-        
+
         Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Energy} energy.");
 
         await using var db = await DbFactory.CreateDbContextAsync();
 
         db.Update(pet);
-        
+
         await db.SaveChangesAsync();
     }
 
@@ -102,7 +102,7 @@ else
         await using var db = await DbFactory.CreateDbContextAsync();
 
         db.Update(pet);
-        
+
         await db.SaveChangesAsync();
 
         return "Your pet found something noteworthy! +4 experience points!";

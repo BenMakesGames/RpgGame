@@ -4,4 +4,14 @@
 
 <h1>A Blank Pet Game</h1>
 
-<p>Welcome to my pet game!</p>
+<AuthorizeView>
+    <Authorized>
+        <p>Welcome back!</p>
+        <ul>
+            <li><a href="/my-house">View my house</a></li>
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>Welcome to my pet game!</p>
+    </NotAuthorized>
+</AuthorizeView>
