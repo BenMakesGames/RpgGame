@@ -1,3 +1,7 @@
+html {
+    --content-width: 800px;
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
@@ -29,6 +33,11 @@ button,.button,input[type=button],input[type=submit],input[type=reset]
     line-height: 100%;
     text-decoration: none;
     cursor: pointer;
+}
+
+button[disabled],.button[disabled]
+{
+    background-color: #999;
 }
 
 label {

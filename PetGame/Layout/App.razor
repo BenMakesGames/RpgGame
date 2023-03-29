@@ -1,4 +1,6 @@
-﻿<CascadingBlazoredModal>
+﻿@using PetGame.Services
+
+<CascadingBlazoredModal>
     <CascadingAuthenticationState>
         <Router AppAssembly="@typeof(App).Assembly">
             <Found Context="routeData">
@@ -17,3 +19,13 @@
         </Router>
     </CascadingAuthenticationState>    
 </CascadingBlazoredModal>
+
+@code {
+    
+    [Inject] private RememberMe RememberMe { get; set; } = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await RememberMe.LogIn();
+    }
+}

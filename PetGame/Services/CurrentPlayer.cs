@@ -2,9 +2,16 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using PetGame.Database;
+using PetGame.Functions;
 
 namespace PetGame.Services;
 
+/// <summary>
+/// This class is used internally by Blazor to determine whether or not the player should have access to certain pages.
+/// It is also useful for getting the Id of the current player. For example, the `MyHouse.razor` page loads the current
+/// player's pets by getting the player's Id from this service, and then looking up all pets whose OwnerId matches the
+/// player's Id.
+/// </summary>
 public sealed class CurrentPlayer: AuthenticationStateProvider
 {
     public CurrentPlayerData? Info { get; private set; }

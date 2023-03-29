@@ -4,9 +4,19 @@
 
 <h1>A Blank Pet Game</h1>
 
-<p>Welcome to my pet game!</p>
-
-<ul>
-    <li><a href="/sign-up">Sign up!</a></li>
-    <li><a href="/players">View all players</a></li>
-</ul>
+<AuthorizeView>
+    <Authorized>
+        <p>Welcome back!</p>
+        <ul>
+            <li><a href="/my-house">View my house</a></li>
+            <li><a href="/players">View all players</a></li>
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>Welcome to my pet game!</p>
+        <ul>
+            <li><a href="/sign-up">Sign up!</a></li>
+            <li><a href="/players">View all players</a></li>
+        </ul>
+    </NotAuthorized>
+</AuthorizeView>
