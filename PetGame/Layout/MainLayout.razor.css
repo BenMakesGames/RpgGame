@@ -1,6 +1,6 @@
 main {
     margin: 0 auto;
-    max-width: 800px;
+    max-width: var(--content-width);
     padding: 1rem;
     background-color: #fff;
     min-height: calc(100vh - 4rem);

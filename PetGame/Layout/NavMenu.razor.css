@@ -8,7 +8,7 @@ header {
 
 header > div {
     margin: 0 auto;
-    max-width: 800px;
+    max-width: var(--content-width);
     padding: 1rem;
     background-color: #336699;
     box-sizing: border-box;
