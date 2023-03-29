@@ -25,10 +25,11 @@ else
                     Image="@pet.Image"
                     Name="@pet.Name"
                     Level="pet.Level"
-                    Energy="pet.Energy"
+                    Health="pet.Health"
+                    MaxHealth="pet.MaxHealth"
                 />
                 <button type="button" @onclick="() => DoFeed(pet)">Feed</button>
-                <button type="button" @onclick="() => DoExplore(pet)">Explore</button>
+                <button type="button" @onclick="() => DoFight(pet)">Fight</button>
             </div>
         }
     </div>
@@ -39,6 +40,7 @@ else
     [CascadingParameter] public IModalService Modals { get; set; } = null!;
     [Inject] public IDbContextFactory<PetGameDatabase> DbFactory { get; set; } = null!;
     [Inject] public CurrentPlayer Player { get; set; } = null!;
+    [Inject] public NavigationManager Navigator { get; set; } = null!;
 
     private List<Pet>? MyPets { get; set; }
 
@@ -51,70 +53,55 @@ else
             .ToListAsync();
     }
 
+    private async Task DoFight(Pet pet)
+    {
+        var db = await DbFactory.CreateDbContextAsync();
+
+        var battle = await db.Battles
+            .Where(b => b.PlayerId == Player.Info!.Id)
+            .FirstOrDefaultAsync();
+
+        if(battle != null)
+        {
+            Navigator.NavigateTo("/battle");
+            return;
+        }
+
+        var newBattle = new Battle()
+        {
+            PlayerId = Player.Info!.Id,
+            PetId = pet.Id,
+            MonsterName = "Goblin",
+            MonsterHealth = 10,
+            MonsterMaxHealth = 10,
+            MonsterAttackDice = 1,
+            MonsterAttackDiceSides = 4,
+            MonsterAttackBonus = 0,
+        };
+        
+        db.Add(newBattle);
+        
+        await db.SaveChangesAsync();
+        
+        Navigator.NavigateTo("/battle");
+    }
+
     private async Task DoFeed(Pet pet)
     {
-        if(pet.Energy >= 10)
+        if(pet.Health >= pet.MaxHealth)
         {
             Alert.Show(Modals, "Oops!", $"{pet.Name} is already at max energy.");
             return;
         }
 
-        pet.Energy = Math.Clamp(pet.Energy + 3, 0, 10);
+        pet.Health = Math.Clamp(pet.Health + 3, 0, pet.MaxHealth);
 
-        Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Energy} energy.");
-
-        await using var db = await DbFactory.CreateDbContextAsync();
-
-        db.Update(pet);
-
-        await db.SaveChangesAsync();
-    }
-
-    private async Task DoExplore(Pet pet)
-    {
-        if(pet.Energy < 1)
-        {
-            Alert.Show(Modals, "Oops!", "Pet is out of energy!");
-            return;
-        }
-
-        pet.Energy--;
-
-        // TODO: make your own game! :P
-        var description = Random.Shared.Next(3) switch
-        {
-            1 => await SomethingHappens(pet),
-            2 => await SomethingAwesomeHappens(pet),
-            _ => await NothingHappens(pet),
-        };
-
-        Alert.Show(Modals, "Explore Results", description);
+        Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Health} HP.");
 
         await using var db = await DbFactory.CreateDbContextAsync();
 
         db.Update(pet);
 
         await db.SaveChangesAsync();
-    }
-
-    private async Task<string> SomethingHappens(Pet pet)
-    {
-        pet.GainExperience(4);
-
-        return "Your pet found something noteworthy! +4 experience points!";
-    }
-
-    private async Task<string> SomethingAwesomeHappens(Pet pet)
-    {
-        pet.GainExperience(10);
-
-        return "Your pet found something rad! +10 experience points!";
-    }
-
-    private async Task<string> NothingHappens(Pet pet)
-    {
-        pet.GainExperience(1);
-
-        return "Your pet went out, but didn't find anything... +1 experience point for the effort.";
     }
 }

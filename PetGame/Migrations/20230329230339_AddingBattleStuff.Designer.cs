@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetGame.Database;
 
@@ -10,52 +11,14 @@ using PetGame.Database;
 namespace PetGame.Migrations
 {
     [DbContext(typeof(PetGameDatabase))]
-    partial class PetGameDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20230329230339_AddingBattleStuff")]
+    partial class AddingBattleStuff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
-
-            modelBuilder.Entity("PetGame.Database.Tables.Battle", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MonsterAttackBonus")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MonsterAttackDice")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MonsterAttackDiceSides")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MonsterHealth")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("MonsterMaxHealth")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("MonsterName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<long>("PetId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("PlayerId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PetId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("Battles");
-                });
 
             modelBuilder.Entity("PetGame.Database.Tables.Pet", b =>
                 {
@@ -114,25 +77,6 @@ namespace PetGame.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("PetGame.Database.Tables.Battle", b =>
-                {
-                    b.HasOne("PetGame.Database.Tables.Pet", "Pet")
-                        .WithMany()
-                        .HasForeignKey("PetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PetGame.Database.Tables.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pet");
-
-                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("PetGame.Database.Tables.Pet", b =>

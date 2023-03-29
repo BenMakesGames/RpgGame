@@ -1,7 +1,7 @@
 ﻿<div class="pet">
     <img src="/images/pets/@(Image).svg" />
     <Ribbon Color="#6699cc">@Name</Ribbon>
-    <span class="energy">@Energy Energy</span>
+    <span class="energy">@Health / @MaxHealth HP</span>
     <span class="level">Level @Level</span>
     @* TODO: draw experience progress bar? *@
 </div>
@@ -9,6 +9,7 @@
 @code {
     [Parameter, EditorRequired] public string Image { get; set; } = "";
     [Parameter, EditorRequired] public string Name { get; set; } = "";
-    [Parameter, EditorRequired] public int Energy { get; set; }
+    [Parameter, EditorRequired] public int Health { get; set; }
+    [Parameter, EditorRequired] public int MaxHealth { get; set; }
     [Parameter, EditorRequired] public int Level { get; set; }
 }

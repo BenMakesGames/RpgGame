@@ -1,0 +1,110 @@
+﻿@page "/battle"
+@using PetGame.Database
+@using Microsoft.EntityFrameworkCore
+@using PetGame.Database.Tables
+@using PetGame.Services
+
+@attribute [Authorize]
+
+<h1>Battle</h1>
+
+@if(Battle == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div style="display:flex; flex-direction: row; gap: 2em;">
+        <div>
+            <PetCard
+                Name="@Battle.Pet!.Name"
+                Image="@Battle.Pet!.Image"
+                MaxHealth="Battle.Pet!.MaxHealth"
+                Health="Battle.Pet!.Health"
+                Level="Battle.Pet!.Level"
+            />
+        </div>
+        <div>
+            VS
+        </div>
+        <div>
+            <PetCard
+                Name="@Battle.MonsterName"
+                MaxHealth="Battle.MonsterMaxHealth"
+                Health="Battle.MonsterHealth"
+                Level="0"
+                Image=""
+            />
+        </div>
+    </div>
+    <p>
+        <button type="button" @onclick="() => DoAttack()">Attack!</button>
+    </p>
+}
+
+@code {
+    [Inject] public IDbContextFactory<PetGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+    [Inject] public NavigationManager Navigator { get; set; } = null!;
+    
+    public Battle? Battle { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var db = await DbFactory.CreateDbContextAsync();
+
+        Battle = await db.Battles
+            .Include(b => b.Pet)
+            .FirstOrDefaultAsync(b => b.PlayerId == Player.Info!.Id);
+
+        if(Battle == null)
+        {
+            Navigator.NavigateTo("/my-house");
+            return;
+        }
+    }
+
+    private async Task DoAttack()
+    {
+        if(Battle == null || Battle.Pet == null)
+            return;
+
+        var petDamage = Random.Shared.Next(Battle.Pet.MinDamage, Battle.Pet.MaxDamage + 1);
+        
+        Battle.MonsterHealth -= petDamage;
+
+        if(Battle.MonsterHealth <= 0)
+        {
+            // TODO: award pet experience points, save changes, show a dialog, and return home
+            await EndBattle();
+
+            return;
+        }
+
+        var monsterDamage = Random.Shared.Roll(Battle.MonsterAttackDice, Battle.MonsterAttackDiceSides) + Battle.MonsterAttackBonus;
+        
+        Battle.Pet.Health = Math.Clamp(Battle.Pet.Health - monsterDamage, 0, Battle.Pet.MaxHealth);
+
+        if(Battle.Pet.Health <= 0)
+        {
+            // TODO: show a "you lost" dialog, save changes, and return home
+            await EndBattle();
+            
+            return;
+        }
+        
+        var db = await DbFactory.CreateDbContextAsync();
+        db.Battles.Update(Battle);
+        await db.SaveChangesAsync();
+    }
+
+    private async Task EndBattle()
+    {
+        var db = await DbFactory.CreateDbContextAsync();
+        db.Update(Battle!.Pet!);
+        db.Battles.Remove(Battle!);
+        await db.SaveChangesAsync();
+        
+        Navigator.NavigateTo("/my-house");
+    }
+}
