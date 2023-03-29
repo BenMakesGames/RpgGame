@@ -10,6 +10,13 @@ public sealed class Pet: PetGameTable
     public int Level { get; set; }
     public int Experience { get; set; }
 
+    public int Stamina { get; set; }
+    public int Strength { get; set; }
+    public int Dexterity { get; set; }
+
+    public int SkillPointsEarned { get; set; }
+    public int SkillPointsSpent { get; set; }
+
     public int Energy { get; set; } = 4;
 
     public void GainExperience(int amount)
@@ -23,6 +30,7 @@ public sealed class Pet: PetGameTable
         {
             Experience -= ExperienceToLevelUp();
             Level++;
+            SkillPointsEarned += 3;
         }
     }
     

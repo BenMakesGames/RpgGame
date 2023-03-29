@@ -1,0 +1,83 @@
+﻿@using PetGame.Database.Tables
+@using Microsoft.EntityFrameworkCore
+@using PetGame.Database
+
+<div>
+    <div>
+        <p>@Pet.Name has @(PointsAvailable) to spend!</p>
+        <table>
+            <tr>
+                <td>Stamina</td>
+                <td><button @onclick="() => Stamina--" disabled="@(Stamina <= 0)">-</button></td>
+                <td>@(Pet.Stamina + Stamina)</td>
+                <td><button @onclick="() => Stamina++" disabled="@(PointsAvailable <= 0)">+</button></td>
+            </tr>
+            <tr>
+                <td>Strength</td>
+                <td><button @onclick="() => Strength--" disabled="@(Strength <= 0)">-</button></td>
+                <td>@(Pet.Strength + Strength)</td>
+                <td><button @onclick="() => Strength++" disabled="@(PointsAvailable <= 0)">+</button></td>
+            </tr>
+            <tr>
+                <td>Dexterity</td>
+                <td><button @onclick="() => Dexterity--" disabled="@(Dexterity <= 0)">-</button></td>
+                <td>@(Pet.Dexterity + Dexterity)</td>
+                <td><button @onclick="() => Dexterity++" disabled="@(PointsAvailable <= 0)">+</button></td>
+            </tr>
+        </table>
+    </div>
+    <p>
+        <button type="button" class="wire" @onclick="() => DoCancel()">Never mind...</button>
+        <button
+            type="button"
+            @onclick="() => DoApplyChanges()"
+            disabled="@(Stamina <= 0 && Strength <= 0 && Dexterity <= 0)">Do it!</button>
+    </p>
+</div>
+
+@code {
+    [Inject] private IDbContextFactory<PetGameDatabase> DatabaseFactory { get; set; } = null!;
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter, EditorRequired] public required Pet Pet { get; set;}
+    
+    private int PointsAvailable => Pet.SkillPointsEarned - Pet.SkillPointsSpent - Stamina - Strength - Dexterity;
+    private int Stamina { get; set; }
+    private int Strength { get; set; }
+    private int Dexterity { get; set; }
+
+    public async Task DoCancel()
+    {
+        await BlazoredModal.CloseAsync();
+    }
+
+    public async Task DoApplyChanges()
+    {
+        if(Strength < 0 || Stamina < 0 || Dexterity < 0)
+            throw new InvalidOperationException("Cannot spend negative skill points!");
+
+        using var db = await DatabaseFactory.CreateDbContextAsync();
+
+        Pet.Stamina += Stamina;
+        Pet.Strength += Strength;
+        Pet.Dexterity += Dexterity;
+        Pet.SkillPointsSpent += Stamina + Strength + Dexterity;
+
+        db.Update(Pet);
+        
+        await db.SaveChangesAsync();
+        
+        await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+    }
+    
+    public static async Task<bool> Show(IModalService modals, Pet pet)
+    {
+        var modalParameters = new ModalParameters();
+        modalParameters.Add(nameof(SpendSkillPoints.Pet), pet);
+
+        var modalResult = await modals.Show<SpendSkillPoints>("Spend Skill Points", modalParameters).Result;
+
+        return modalResult.Data is true;
+    }
+}

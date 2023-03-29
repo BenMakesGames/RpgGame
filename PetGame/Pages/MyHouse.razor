@@ -29,6 +29,11 @@ else
                 />
                 <button type="button" @onclick="() => DoFeed(pet)">Feed</button>
                 <button type="button" @onclick="() => DoExplore(pet)">Explore</button>
+                
+                @if(pet.SkillPointsSpent < pet.SkillPointsEarned)
+                {
+                    <button type="button" class="level-up" @onclick="() => DoSpendSkillPoints(pet)">^</button>
+                }
             </div>
         }
     </div>
@@ -43,6 +48,11 @@ else
     private List<Pet>? MyPets { get; set; }
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadPets();
+    }
+
+    private async Task LoadPets()
     {
         await using var db = await DbFactory.CreateDbContextAsync();
 
@@ -116,5 +126,13 @@ else
         pet.GainExperience(1);
 
         return "Your pet went out, but didn't find anything... +1 experience point for the effort.";
+    }
+
+    private async Task DoSpendSkillPoints(Pet pet)
+    {
+        var petWasLeveled = await SpendSkillPoints.Show(Modals, pet);
+
+        if(petWasLeveled)
+            await LoadPets();
     }
 }
