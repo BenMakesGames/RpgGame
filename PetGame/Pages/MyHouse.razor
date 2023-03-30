@@ -27,8 +27,14 @@ else
                     Level="pet.Level"
                     Energy="pet.Energy"
                 />
-                <button type="button" @onclick="() => DoFeed(pet)">Feed</button>
-                <button type="button" @onclick="() => DoExplore(pet)">Explore</button>
+                <button type="button" @onclick="() => DoFeed(pet)">
+                    <i class="fa-solid fa-utensils"></i>
+                    Feed
+                </button>
+                <button type="button" @onclick="() => DoExplore(pet)">
+                    <i class="fa-solid fa-binoculars"></i>
+                    Explore
+                </button>
             </div>
         }
     </div>

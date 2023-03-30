@@ -1,3 +1,7 @@
+@import "fontawesome.min.css";
+@import "solid.min.css";
+@import "regular.min.css";
+
 html {
     --content-width: 800px;
 }
