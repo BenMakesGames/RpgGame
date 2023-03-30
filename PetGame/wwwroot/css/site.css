@@ -41,7 +41,7 @@ button[disabled],.button[disabled]
 }
 
 button.wire,.button.wire {
-    outline: 1px solid dodgerblue;
+    border: 1px solid dodgerblue;
     background-color: transparent;
     color: dodgerblue;
 }
