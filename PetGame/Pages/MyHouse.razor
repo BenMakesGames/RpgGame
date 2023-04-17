@@ -27,8 +27,8 @@ else
                     Level="pet.Level"
                     Energy="pet.Energy"
                 />
-                <button type="button" @onclick="() => DoFeed(pet)">Feed</button>
-                <button type="button" @onclick="() => DoExplore(pet)">Explore</button>
+                <button type="button" @onclick="() => DoFeed(pet.Id)">Feed</button>
+                <button type="button" @onclick="() => DoExplore(pet.Id)">Explore</button>
             </div>
         }
     </div>
@@ -44,6 +44,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadPets();
+    }
+
+    private async Task LoadPets()
+    {
         await using var db = await DbFactory.CreateDbContextAsync();
 
         MyPets = await db.Pets
@@ -51,8 +56,18 @@ else
             .ToListAsync();
     }
 
-    private async Task DoFeed(Pet pet)
+    private async Task DoFeed(long petId)
     {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var pet = await db.Pets.FirstOrDefaultAsync(x => x.Id == petId && x.OwnerId == Player.Info!.Id);
+        
+        if(pet == null)
+        {
+            Alert.Show(Modals, "Oops!", "Pet not found!");
+            return;
+        }
+
         if(pet.Energy >= 10)
         {
             Alert.Show(Modals, "Oops!", $"{pet.Name} is already at max energy.");
@@ -63,15 +78,23 @@ else
 
         Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Energy} energy.");
 
-        await using var db = await DbFactory.CreateDbContextAsync();
-
-        db.Update(pet);
-
         await db.SaveChangesAsync();
+
+        await LoadPets();
     }
 
-    private async Task DoExplore(Pet pet)
+    private async Task DoExplore(long petId)
     {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var pet = await db.Pets.FirstOrDefaultAsync(x => x.Id == petId && x.OwnerId == Player.Info!.Id);
+        
+        if(pet == null)
+        {
+            Alert.Show(Modals, "Oops!", "Pet not found!");
+            return;
+        }
+
         if(pet.Energy < 1)
         {
             Alert.Show(Modals, "Oops!", "Pet is out of energy!");
@@ -90,11 +113,9 @@ else
 
         Alert.Show(Modals, "Explore Results", description);
 
-        await using var db = await DbFactory.CreateDbContextAsync();
-
-        db.Update(pet);
-
         await db.SaveChangesAsync();
+
+        await LoadPets();
     }
 
     private async Task<string> SomethingHappens(Pet pet)

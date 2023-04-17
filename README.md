@@ -1,4 +1,6 @@
-# PetGame
+# PetGame (2.0)
+
+**Hey, listen!** Videos released on or before April 18, 2023 are using a slightly different version of PetGame. If you're following along & coding from one of those videos, you may need to adapt a little. Sorry about the confusion, but a very important bug was fixed! More information on that bugfix is in the following video:  
 
 ## What is it?
 
