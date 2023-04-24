@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore
 @using PetGame.Database.Tables
 @using PetGame.Dialogs
+@using PetGame.Functions
 
 @page "/my-house"
 @attribute [Authorize]
@@ -59,26 +60,10 @@ else
     private async Task DoFeed(long petId)
     {
         await using var db = await DbFactory.CreateDbContextAsync();
-
-        var pet = await db.Pets.FirstOrDefaultAsync(x => x.Id == petId && x.OwnerId == Player.Info!.Id);
-        
-        if(pet == null)
-        {
-            Alert.Show(Modals, "Oops!", "Pet not found!");
-            return;
-        }
-
-        if(pet.Energy >= 10)
-        {
-            Alert.Show(Modals, "Oops!", $"{pet.Name} is already at max energy.");
-            return;
-        }
-
-        pet.Energy = Math.Clamp(pet.Energy + 3, 0, 10);
-
-        Alert.Show(Modals, "Omnomnom!", $"{pet.Name} is now at {pet.Energy} energy.");
-
+        var resultMessage = await PetFeeding.Feed(db, Player.Info!.Id, petId);
         await db.SaveChangesAsync();
+
+        Alert.Show(Modals, resultMessage.Title, resultMessage.Message);
 
         await LoadPets();
     }
