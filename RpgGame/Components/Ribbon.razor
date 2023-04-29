@@ -6,6 +6,6 @@
 
 @code {
     [Parameter, EditorRequired] public RenderFragment ChildContent { get; set; } = null!;
-    [Parameter, EditorRequired] public string Color { get; set; } = "#369";
-    [Parameter, EditorRequired] public string TextColor { get; set; } = "#fff";
+    [Parameter] public string Color { get; set; } = "#369";
+    [Parameter] public string TextColor { get; set; } = "#fff";
 }
