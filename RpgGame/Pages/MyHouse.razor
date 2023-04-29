@@ -1,0 +1,141 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using RpgGame.Dialogs
+@using RpgGame.Database
+@using RpgGame.Database.Tables
+@using RpgGame.Services
+
+@page "/my-house"
+@attribute [Authorize]
+
+<PageTitle>Rpg Game - My House</PageTitle>
+
+<h1>@Player.Info!.Name's House</h1>
+
+@if (MyCharacters == null)
+{
+    <p><em>Loading characters...</em></p>
+}
+else
+{
+    <div class="characters">
+        @foreach (var character in MyCharacters)
+        {
+            <div>
+                <CharacterCard
+                    Image="@character.Image"
+                    Name="@character.Name"
+                    Level="character.Level"
+                    Energy="character.Energy"
+                />
+                <button type="button" @onclick="() => DoRest(character.Id)">Rest</button>
+                <button type="button" @onclick="() => DoExplore(character.Id)">Explore</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    [CascadingParameter] public IModalService Modals { get; set; } = null!;
+    [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+
+    private List<Character>? MyCharacters { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCharacters();
+    }
+
+    private async Task LoadCharacters()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        MyCharacters = await db.Characters
+            .Where(p => p.OwnerId == Player.Info!.Id)
+            .ToListAsync();
+    }
+
+    private async Task DoRest(long characterId)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var character = await db.Characters.FirstOrDefaultAsync(x => x.Id == characterId && x.OwnerId == Player.Info!.Id);
+        
+        if(character == null)
+        {
+            Alert.Show(Modals, "Oops!", "Character not found!");
+            return;
+        }
+
+        if(character.Energy >= Character.MaximumEnergy)
+        {
+            Alert.Show(Modals, "Oops!", $"{character.Name} is already at max energy.");
+            return;
+        }
+
+        character.Energy = Math.Clamp(character.Energy + 3, 0, Character.MaximumEnergy);
+
+        Alert.Show(Modals, "Ahh~!", $"{character.Name} is now at {character.Energy} energy.");
+
+        await db.SaveChangesAsync();
+
+        await LoadCharacters();
+    }
+
+    private async Task DoExplore(long characterId)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var character = await db.Characters.FirstOrDefaultAsync(x => x.Id == characterId && x.OwnerId == Player.Info!.Id);
+        
+        if(character == null)
+        {
+            Alert.Show(Modals, "Oops!", "Character not found!");
+            return;
+        }
+
+        if(character.Energy < 1)
+        {
+            Alert.Show(Modals, "Oops!", $"{character.Name} is out of energy!");
+            return;
+        }
+
+        character.Energy--;
+
+        // TODO: make your own game! :P
+        var description = Random.Shared.Next(3) switch
+        {
+            1 => await SomethingHappens(character),
+            2 => await SomethingAwesomeHappens(character),
+            _ => await NothingHappens(character),
+        };
+
+        Alert.Show(Modals, "Explore Results", description);
+
+        await db.SaveChangesAsync();
+
+        await LoadCharacters();
+    }
+
+    private async Task<string> SomethingHappens(Character character)
+    {
+        character.GainExperience(4);
+
+        return $"{character.Name} found something noteworthy! +4 experience points!";
+    }
+
+    private async Task<string> SomethingAwesomeHappens(Character character)
+    {
+        character.GainExperience(10);
+
+        return $"{character.Name} found something rad! +10 experience points!";
+    }
+
+    private async Task<string> NothingHappens(Character character)
+    {
+        character.GainExperience(1);
+
+        return $"{character.Name} went out, but didn't find anything... +1 experience point for the effort.";
+    }
+}

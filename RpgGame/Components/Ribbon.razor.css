@@ -1,0 +1,27 @@
+﻿.ribbon {
+    position: relative;
+    text-align: center;
+}
+
+.left,.right {
+    position: absolute;
+    height: 1em;
+    top: -3px;
+    width: 6px;
+    filter: brightness(80%);
+}
+
+.left {
+    left: -3px;
+    height: 1.2em;
+}
+
+.right {
+    right: -3px;
+    height: 1.2em;
+}
+
+.label {
+    position: relative;
+    height: 1.2em;
+}

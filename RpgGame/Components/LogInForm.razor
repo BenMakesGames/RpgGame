@@ -1,0 +1,64 @@
+﻿@using FluentValidation
+@using RpgGame.Dialogs
+@using RpgGame.Services
+@inject NavigationManager Navigation
+
+<EditForm Model="FormData" OnValidSubmit="DoLogIn">
+    <FluentValidationValidator />
+
+    <p>
+        <label>Email Address</label>
+        <InputText @bind-Value="FormData.EmailAddress"/>
+        <ValidationMessage For="() => FormData.EmailAddress"/>
+    </p>
+
+    <p>
+        <label>Password</label>
+        <InputText @bind-Value="FormData.Password" type="password"/>
+        <ValidationMessage For="() => FormData.Password"/>
+    </p>
+
+    <p>
+        <button type="submit">Log In</button>
+    </p>
+</EditForm>
+
+@code {
+
+    [CascadingParameter] public IModalService Modals { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+    [Inject] public NavigationManager Navigator { get; set; } = null!;
+    [Inject] public RememberMe RememberMe { get; set; } = null!;
+
+    private LogInData FormData { get; } = new();
+
+    private async Task DoLogIn()
+    {
+        var result = await Player.LogInAsync(FormData.EmailAddress, FormData.Password);
+
+        if(!result.Success)
+        {
+            Alert.Show(Modals, "No Good!", result.Message);
+            return;
+        }
+
+        await RememberMe.Remember(FormData.EmailAddress, FormData.Password);
+
+        Navigator.NavigateTo("/my-house");
+    }
+
+    public sealed class LogInData
+    {
+        public string EmailAddress { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+    
+    public sealed class LogInDataValidator : AbstractValidator<LogInData>
+    {
+        public LogInDataValidator()
+        {
+            RuleFor(r => r.EmailAddress).EmailAddress();
+            RuleFor(r => r.Password).NotEmpty();
+        }
+    }
+}

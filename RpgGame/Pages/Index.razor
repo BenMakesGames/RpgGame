@@ -1,0 +1,17 @@
+﻿@page "/"
+
+<PageTitle>Rpg Game</PageTitle>
+
+<h1>A Blank Rpg Game</h1>
+
+<AuthorizeView>
+    <Authorized>
+        <p>Welcome back!</p>
+        <ul>
+            <li><a href="/my-house">View my house</a></li>
+        </ul>
+    </Authorized>
+    <NotAuthorized>
+        <p>Welcome to my rpg game!</p>
+    </NotAuthorized>
+</AuthorizeView>

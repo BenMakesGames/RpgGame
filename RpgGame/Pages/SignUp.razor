@@ -1,0 +1,148 @@
+﻿@using FluentValidation
+@using Microsoft.EntityFrameworkCore
+@using RpgGame.Dialogs
+@using RpgGame.Database
+@using RpgGame.Database.Tables
+@using RpgGame.Functions
+@using RpgGame.Services
+
+@page "/sign-up"
+
+<PageTitle>Rpg Game - Sign Up</PageTitle>
+
+<h1>Sign Up</h1>
+
+<EditForm Model="FormData" OnValidSubmit="DoSignUp">
+    <FluentValidationValidator />
+
+    <h3>About You</h3>
+    
+    <p>
+        <label>Name</label>
+        <InputText @bind-Value="FormData.Name"/>
+        <ValidationMessage For="() => FormData.Name" />
+    </p>
+
+    <p>
+        <label>Email Address</label>
+        <InputText @bind-Value="FormData.EmailAddress"/>
+        <ValidationMessage For="() => FormData.EmailAddress" />
+    </p>
+
+    <p>
+        <label>Password</label>
+        <InputText @bind-Value="FormData.Password" type="password" />
+        <ValidationMessage For="() => FormData.Password" />
+    </p>
+
+    <h3>About Your First Character</h3>
+    
+    <p>
+        <label>Name</label>
+        <InputText @bind-Value="FormData.FirstCharacterName"/>
+        <ValidationMessage For="() => FormData.FirstCharacterName" />
+    </p>
+    
+    <p>
+        <label>Appearance</label>
+        <InputSelect @bind-Value="FormData.FirstCharacterAppearance">
+            @foreach(var appearance in AllowedFirstCharacterAppearances)
+            {
+                <option value="@appearance.Image">@appearance.Name</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="() => FormData.FirstCharacterAppearance" />
+        <CharacterCard Name="@FormData.FirstCharacterName" Image="@FormData.FirstCharacterAppearance" Energy="Character.StartingEnergy" Level="Character.StartingLevel" />
+    </p>
+
+    <p>
+        <a class="button wire" href="/">Cancel</a>
+        <button type="submit">Sign Up</button>
+    </p>
+</EditForm>
+
+@code {
+
+    [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+    [Inject] public NavigationManager Navigator { get; set; } = null!;
+
+    [CascadingParameter] public IModalService Modals { get; set; } = null!;
+
+    public static readonly List<CharacterAppearances> AllowedFirstCharacterAppearances = new()
+    {
+        new CharacterAppearances("Little Guy", "little-guy"),
+        new CharacterAppearances("Priestess", "priestess"),
+        new CharacterAppearances("Space Knight", "space-knight"),
+    };
+    
+    private SignUpData FormData { get; } = new();
+
+    private async Task DoSignUp()
+    {
+        await using var database = await DbFactory.CreateDbContextAsync();
+        
+        if(await database.Players.AnyAsync(p => p.EmailAddress == FormData.EmailAddress))
+        {
+            Alert.Show(Modals, "Sorry :(", "That email address is already in use!");
+            return;
+        }
+
+        var hashedPassword = Security.HashPassword(FormData.Password);
+
+        var player = new Player()
+        {
+            Name = FormData.Name,
+            EmailAddress = FormData.EmailAddress,
+            Password = hashedPassword
+        };
+
+        var character = new Character()
+        {
+            Name = FormData.FirstCharacterName,
+            Image = FormData.FirstCharacterAppearance,
+            Owner = player
+        };
+
+        database.Add(player);
+        database.Add(character);
+
+        await database.SaveChangesAsync();
+
+        var logInResult = await Player.LogInAsync(FormData.EmailAddress, FormData.Password);
+
+        if(!logInResult.Success)
+        {
+            Alert.Show(Modals, "Oops!", logInResult.Message);
+            return;
+        }
+        
+        Navigator.NavigateTo("/my-house");
+    }
+
+    public sealed class SignUpData
+    {
+        public string Name { get; set; } = "";
+        public string FirstCharacterName { get; set; } = "";
+        public string FirstCharacterAppearance { get; set; } = AllowedFirstCharacterAppearances.First().Image;
+        public string EmailAddress { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+
+    public sealed class SignUpFormValidator : AbstractValidator<SignUpData>
+    {
+        public SignUpFormValidator()
+        {
+            RuleFor(r => r.Name).NotEmpty();
+            RuleFor(r => r.EmailAddress).EmailAddress();
+            RuleFor(r => r.Password).MinimumLength(10).WithMessage("Password must be at least 10 characters long.");
+
+            RuleFor(r => r.FirstCharacterName).NotEmpty();
+            RuleFor(r => r.FirstCharacterAppearance)
+                .Must(a => AllowedFirstCharacterAppearances.Any(c => c.Image == a))
+                .WithMessage("Must select an appearance.");
+        }
+    }
+
+    public record CharacterAppearances(string Name, string Image);
+}

@@ -1,0 +1,28 @@
+﻿@using RpgGame.Services
+<header>
+    <div>
+        <AuthorizeView>
+            <Authorized>
+                Hello, @(CurrentPlayer.Info?.Name ?? "friend")! <button type="button" @onclick="DoLogOut">Logout</button>
+            </Authorized>
+            <NotAuthorized>
+                Hello, stranger!
+                <a class="button" href="/log-in">Login</a>
+                <a class="button" href="/sign-up">Sign up</a>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</header>
+
+@code {
+
+    [Inject] public CurrentPlayer CurrentPlayer { get; set; } = null!;
+    [Inject] public RememberMe RememberMe { get; set; } = null!;
+
+    private async Task DoLogOut()
+    {
+        await RememberMe.Forget();
+        await CurrentPlayer.LogOutAsync();
+    }
+
+}
