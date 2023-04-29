@@ -12,6 +12,9 @@ public sealed class Pet: PetGameTable
 
     public int Energy { get; set; } = 4;
 
+    public string BackgroundImage { get; set; } = "";
+    public string ForegroundImage { get; set; } = "";
+
     public void GainExperience(int amount)
     {
         if (amount < 0)

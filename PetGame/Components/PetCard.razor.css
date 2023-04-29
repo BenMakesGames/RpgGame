@@ -4,12 +4,6 @@
     flex-direction: column;
 }
 
-img {
-    display: block;
-    width: 80px;
-    margin: 0 auto 0.25rem;
-}
-
 .name {
     text-align: center;
     display: block;
@@ -29,4 +23,18 @@ img {
     border-radius: 3px;
     padding: 0 0.5em;
     font-size: 80%;
+}
+
+.layered-images {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.layered-images img {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 80px;
+    height: 80px;
 }

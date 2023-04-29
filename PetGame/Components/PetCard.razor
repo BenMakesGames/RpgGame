@@ -1,5 +1,15 @@
 ﻿<div class="pet">
-    <img src="/images/pets/@(Image).svg" />
+    <div class="layered-images">
+        @if(!string.IsNullOrWhiteSpace(BackgroundImage))
+        {
+            <img src="/images/pet-backgrounds/@BackgroundImage"/>
+        }
+        <img src="/images/pets/@(Image).svg"/>
+        @if(!string.IsNullOrWhiteSpace(ForegroundImage))
+        {
+            <img src="/images/pet-backgrounds/@ForegroundImage"/>
+        }
+    </div>
     <Ribbon Color="#6699cc">@Name</Ribbon>
     <span class="energy">@Energy Energy</span>
     <span class="level">Level @Level</span>
@@ -9,6 +19,8 @@
 @code {
     [Parameter, EditorRequired] public string Image { get; set; } = "";
     [Parameter, EditorRequired] public string Name { get; set; } = "";
+    [Parameter, EditorRequired] public string BackgroundImage { get; set; } = "";
+    [Parameter, EditorRequired] public string ForegroundImage { get; set; } = "";
     [Parameter, EditorRequired] public int Energy { get; set; }
     [Parameter, EditorRequired] public int Level { get; set; }
 }
