@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using RpgGame.Functions;
 
 namespace RpgGame.Services;
