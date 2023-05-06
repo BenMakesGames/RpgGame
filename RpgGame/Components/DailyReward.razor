@@ -1,0 +1,66 @@
+﻿@using RpgGame.Services
+@using RpgGame.Database
+@using Microsoft.EntityFrameworkCore
+@using RpgGame.Database.Tables
+@using RpgGame.Dialogs
+
+@if(CanCollectDailyReward)
+{
+    <button @onclick="GetRewardAsync">Get your reward!</button>
+}
+
+@code {
+
+    [CascadingParameter] public IModalService Modals { get; set; } = null!;
+    [Inject] CurrentPlayer CurrentPlayer { get; set; } = null!;
+    [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+
+    public bool CanCollectDailyReward { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var db = await DbFactory.CreateDbContextAsync();
+
+        var collectedDailyReward = await db.DailyRewardsCollected.FirstOrDefaultAsync(r =>
+            r.PlayerId == CurrentPlayer.Info!.Id &&
+            r.CollectedOn.Date == DateTime.UtcNow.Date
+        );
+
+        if(collectedDailyReward == null)
+            CanCollectDailyReward = true;
+        else
+            CanCollectDailyReward = false;
+    }
+
+    public async Task GetRewardAsync()
+    {
+        var db = await DbFactory.CreateDbContextAsync();
+
+        var collectedDailyReward = await db.DailyRewardsCollected.FirstOrDefaultAsync(r =>
+            r.PlayerId == CurrentPlayer.Info!.Id &&
+            r.CollectedOn.Date == DateTime.UtcNow.Date
+            );
+
+        if(collectedDailyReward != null)
+        {
+            CanCollectDailyReward = false;
+            return;
+        }
+        
+        // TODO: give the player the reward
+        
+        Alert.Show(Modals, "Daily Reward!", "Neat! You got... something >_>");
+
+        var newRewardRecord = new DailyRewardCollected()
+        {
+            PlayerId = CurrentPlayer.Info!.Id,
+        };
+
+        db.Add(newRewardRecord);
+
+        await db.SaveChangesAsync();
+
+        CanCollectDailyReward = false;
+    }
+
+}

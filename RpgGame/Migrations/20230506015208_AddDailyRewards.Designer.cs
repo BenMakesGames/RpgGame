@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RpgGame.Database;
 
@@ -10,9 +11,11 @@ using RpgGame.Database;
 namespace RpgGame.Migrations
 {
     [DbContext(typeof(RpgGameDatabase))]
-    partial class RpgGameDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20230506015208_AddDailyRewards")]
+    partial class AddDailyRewards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
