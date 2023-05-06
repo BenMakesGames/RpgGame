@@ -6,6 +6,7 @@ namespace RpgGame.Services;
 public sealed class RememberMe
 {
     private const string LocalStorageKey = "remember-me";
+    private const string ConfigurationSectionName = "RememberMe";
     
     private ILocalStorageService LocalStorage { get; }
     private CurrentPlayer CurrentPlayer { get; }
@@ -18,7 +19,8 @@ public sealed class RememberMe
     {
         LocalStorage = localStorage;
         CurrentPlayer = currentPlayer;
-        Config = config.GetSection("RememberMe").Get<RememberMeConfig>() ?? throw new Exception("RememberMe section is missing from appsettings.");
+        Config = config.GetSection(ConfigurationSectionName).Get<RememberMeConfig>()
+            ?? throw new Exception($"{ConfigurationSectionName} section is missing from appsettings.");
     }
 
     public async Task LogIn()
