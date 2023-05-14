@@ -1,0 +1,145 @@
+﻿@page "/garden"
+@using RpgGame.Database
+@using RpgGame.Database.Tables
+@using Microsoft.EntityFrameworkCore
+@using RpgGame.Services
+@attribute [Authorize]
+
+<PageTitle>Rpg Game - Garden</PageTitle>
+
+<h1>@Player.Info!.Name's Garden</h1>
+
+@if(MyPlants == null)
+{
+    <p>Loading plants...</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Progress</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var plant in MyPlants)
+            {
+                var percentGrown = plant.PercentGrown(DateTimeOffset.UtcNow);
+                <tr>
+                    <td>@plant.Type</td>
+                    <td>
+                        @(percentGrown)%
+                    </td>
+                    <td>
+                        @if(percentGrown >= 100)
+                        {
+                            <button @onclick="() => DoHarvest(plant.Id)">Harvest</button>
+                        }
+                        else
+                        {
+                            <button @onclick="() => DoDelete(plant.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <button @onclick="() => DoPlantTree(PlantType.Apple)">Plant an Apple Tree</button>
+    <button @onclick="() => DoPlantTree(PlantType.Money)">Plant a Money Tree</button>
+</div>
+
+@code {
+    [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+
+    private List<Plant>? MyPlants { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPlants();
+    }
+
+    private async Task LoadPlants()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        MyPlants = await db.Plants
+            .Where(p => p.OwnerId == Player.Info!.Id)
+            .ToListAsync();
+    }
+
+    private async Task DoPlantTree(PlantType plantType)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        db.Add(new Plant()
+        {
+            OwnerId = Player.Info!.Id,
+            Type = plantType
+        });
+
+        await db.SaveChangesAsync();
+        await LoadPlants();
+    }
+
+    private async Task DoHarvest(long plantId)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var plant = await db.Plants.FirstOrDefaultAsync(plant => plant.Id == plantId);
+
+        if(plant == null)
+        {
+            await LoadPlants();
+            return;
+        }
+
+        if(plant.Type == PlantType.Apple)
+        {
+            
+        }
+        else if(plant.Type == PlantType.Bananer)
+        {
+            
+        }
+
+        db.Characters.Add(new Character()
+        {
+            Image = "little-guy",
+            Name = "Plant Dude",
+            OwnerId = Player.Info!.Id,
+        });
+        
+        plant.PlantedOn = DateTimeOffset.UtcNow;
+
+        await db.SaveChangesAsync();
+
+        await LoadPlants();
+        
+    }
+
+    private async Task DoDelete(long plantId)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var plant = await db.Plants.FirstOrDefaultAsync(plant => plant.Id == plantId);
+
+        if(plant == null)
+        {
+            await LoadPlants();
+            return;
+        }
+
+        db.Plants.Remove(plant);
+
+        await db.SaveChangesAsync();
+
+        await LoadPlants();
+    }
+
+}

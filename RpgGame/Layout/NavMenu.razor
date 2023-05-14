@@ -3,7 +3,14 @@
     <div>
         <AuthorizeView>
             <Authorized>
-                Hello, @(CurrentPlayer.Info?.Name ?? "friend")! <button type="button" @onclick="DoLogOut">Logout</button>
+                <div class="logged-in-nav">
+                    <div>Hello, @(CurrentPlayer.Info?.Name ?? "friend")!</div>
+                    <button type="button" @onclick="DoLogOut">Logout</button>
+                    <ul>
+                        <li><a href="/my-house">House</a></li>
+                        <li><a href="/garden">Garden</a></li>
+                    </ul>
+                </div>
             </Authorized>
             <NotAuthorized>
                 Hello, stranger!

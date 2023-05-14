@@ -13,3 +13,22 @@ header > div {
     background-color: #336699;
     box-sizing: border-box;
 }
+
+.logged-in-nav {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.logged-in-nav ul {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5em;
+    list-style: none;
+    margin: 0;
+}
+
+.logged-in-nav ul a {
+    color: white;
+}
