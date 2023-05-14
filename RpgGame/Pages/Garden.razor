@@ -99,15 +99,25 @@ else
             return;
         }
 
+        // TODO: give some yield, based on the plant type...
         if(plant.Type == PlantType.Apple)
         {
-            
         }
         else if(plant.Type == PlantType.Bananer)
         {
             
         }
+        else if(plant.Type == PlantType.Money)
+        {
+            
+        }
+        else
+        {
+            // TODO: show an error message?
+            return;
+        }
 
+        // TODO: remove this after adding real plant yields
         db.Characters.Add(new Character()
         {
             Image = "little-guy",
@@ -115,12 +125,12 @@ else
             OwnerId = Player.Info!.Id,
         });
         
+        // TODO: keep this next line to reset the grow time, or use db.Plants.Remove(plant); instead if you want to remove the plant
         plant.PlantedOn = DateTimeOffset.UtcNow;
 
         await db.SaveChangesAsync();
 
         await LoadPlants();
-        
     }
 
     private async Task DoDelete(long plantId)
