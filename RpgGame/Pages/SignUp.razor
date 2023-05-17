@@ -39,7 +39,7 @@
     
     <p>
         <label>Name</label>
-        <InputText @bind-Value="FormData.FirstCharacterName"/>
+        <input @bind="FormData.FirstCharacterName" @bind:event="oninput" />
         <ValidationMessage For="() => FormData.FirstCharacterName" />
     </p>
     

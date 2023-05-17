@@ -18,6 +18,13 @@ body {
 button, input, textarea, select, option {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 1em;
+    box-sizing: border-box;
+}
+
+input:not([type]), input[type=text], input[type=password], input[type=email], input[type=url], input[type=date]
+textarea, select {
+    padding: 0.25rem 0.5rem;
+    margin: 0;
 }
 
 button,.button,input[type=button],input[type=submit],input[type=reset]
@@ -51,6 +58,10 @@ label {
     font-weight: bold;
     font-size: 80%;
     display: block;
+}
+
+.validation-message {
+    color: #c52;
 }
 
 #blazor-error-ui {
