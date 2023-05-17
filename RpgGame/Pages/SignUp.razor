@@ -39,6 +39,11 @@
     
     <p>
         <label>Name</label>
+        @*
+            for previewing the character, I want the name to update with every keystroke.
+            to do this, we use @bind:event="oninput", but <InputText> doesn't support that,
+            so a plain <input> is used here, instead:
+        *@
         <input @bind="FormData.FirstCharacterName" @bind:event="oninput" />
         <ValidationMessage For="() => FormData.FirstCharacterName" />
     </p>
