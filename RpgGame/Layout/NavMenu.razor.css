@@ -12,4 +12,14 @@ header > div {
     padding: 1rem;
     background-color: #336699;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.hamburger {
+    background: transparent;
+    padding: 0;
+    margin-left: auto;
 }

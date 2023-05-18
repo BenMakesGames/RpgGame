@@ -1,0 +1,37 @@
+﻿@using RpgGame.Services
+
+@if(IsOpen)
+{
+    <div class="menu">
+        <button class="backdrop" @onclick="DoClose"></button>
+        <nav>
+            <AuthorizeView>
+                <Authorized>
+                    <a href="/my-house" class="button">
+                        <img src="images/menu/my-house.svg"/>
+                        <div>Home</div>
+                    </a>
+                    <a href="/about" class="button">
+                        <img src="images/menu/help.svg"/>
+                        <div>About</div>
+                    </a>
+                    <button type="button" @onclick="DoLogOut">
+                        <img src="images/menu/log-out.svg"/>
+                        <div>Logout</div>
+                    </button>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="/sign-up" class="button">
+                        <img src="images/menu/sign-up.svg"/>
+                        <div>Sign Up</div>
+                    </a>
+                    <a href="/about" class="button">
+                        <img src="images/menu/help.svg"/>
+                        <div>About</div>
+                    </a>
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </nav>
+    </div>
+}

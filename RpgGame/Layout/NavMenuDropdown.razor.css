@@ -1,0 +1,49 @@
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-index-nav-menu);
+}
+
+.backdrop {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border-radius: 0;
+    background: rgb(0 0 0 / 0.75);
+}
+
+nav {
+    position: absolute;
+    top: 1rem;
+    left: max(1rem, calc((100% - var(--content-width)) / 2 + 1rem));
+    max-width: calc(var(--content-width) - 2rem);
+    
+    pointer-events: none;
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+nav > * {
+    pointer-events: auto;
+}
+
+nav > * > img {
+    display: block;
+    width: 80px;
+    height: 80px;
+}
+
+nav > * > div {
+    padding-top: 0.5rem;
+    color: white;
+    text-align: center;
+}

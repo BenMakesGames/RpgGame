@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)">
+  <path d="m5.046 294.26v1.3135h-3.7703v-5.5752h3.7703v1.3134" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".66146" style="paint-order:markers fill stroke"/>
+  <path d="m3.3073 292.79h3.8743" fill="none" stroke="#fff" stroke-width=".66146"/>
+  <path d="m6.1555 290.97 1.8632 1.8632-1.8632 1.8632z" fill="#fff"/>
+ </g>
+</svg>

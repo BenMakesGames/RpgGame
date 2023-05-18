@@ -1,5 +1,7 @@
 html {
     --content-width: 800px;
+    
+    --z-index-nav-menu: 999;
 }
 
 html, body {
