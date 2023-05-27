@@ -5,3 +5,10 @@
     flex-wrap: wrap;
     gap: 1em;
 }
+
+.inventory {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1em;
+}

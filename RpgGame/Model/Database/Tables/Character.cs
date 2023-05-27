@@ -1,4 +1,4 @@
-﻿namespace RpgGame.Database.Tables;
+﻿namespace RpgGame.Model.Database.Tables;
 
 public sealed class Character: RpgGameTable
 {

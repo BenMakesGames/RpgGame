@@ -3,7 +3,7 @@ using Blazored.Modal;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using RpgGame.Database;
+using RpgGame.Model.Database;
 using RpgGame.Services;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,0 +1,11 @@
+﻿@using RpgGame.Model
+<div class="stack">
+    <img src="@ItemType.GetImage()" width="64" height="64" />
+    <div class="name">@ItemType.GetName()</div>
+    <div class="quantity">&times; @Quantity</div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public required ItemType ItemType { get; set; }
+    [Parameter, EditorRequired] public required long Quantity { get; set; }
+}

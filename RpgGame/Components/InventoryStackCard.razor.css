@@ -1,0 +1,24 @@
+.stack {
+    position: relative;
+    width: 4rem;
+}
+
+.name {
+    text-align: center;
+}
+
+img {
+    width: 64px;
+    margin: 0 auto;
+    display: block;
+}
+
+.quantity {
+    position: absolute;
+    right: 0;
+    bottom: 1.2rem;
+    background-color: #225588;
+    color: white;
+    border-radius: 5px;
+    padding: calc(0.25rem / 2) 0.25rem;
+}

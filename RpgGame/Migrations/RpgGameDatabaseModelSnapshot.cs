@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RpgGame.Database;
+using RpgGame.Model.Database;
 
 #nullable disable
 
@@ -15,7 +15,7 @@ namespace RpgGame.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
 
             modelBuilder.Entity("RpgGame.Database.Tables.Character", b =>
                 {
@@ -76,11 +76,44 @@ namespace RpgGame.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("RpgGame.Database.Tables.PlayerInventory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("OwnerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("PlayerInventories");
+                });
+
             modelBuilder.Entity("RpgGame.Database.Tables.Character", b =>
                 {
                     b.HasOne("RpgGame.Database.Tables.Player", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("RpgGame.Database.Tables.PlayerInventory", b =>
+                {
+                    b.HasOne("RpgGame.Database.Tables.Player", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Owner");
                 });

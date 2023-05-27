@@ -1,4 +1,4 @@
-﻿namespace RpgGame.Database;
+﻿namespace RpgGame.Model.Database;
 
 public abstract class RpgGameTable
 {

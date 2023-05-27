@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
-using RpgGame.Database;
 using RpgGame.Functions;
+using RpgGame.Model.Database;
 
 namespace RpgGame.Services;
 

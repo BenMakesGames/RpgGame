@@ -1,7 +1,9 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using RpgGame.Dialogs
-@using RpgGame.Database
-@using RpgGame.Database.Tables
+@using RpgGame.Functions
+@using RpgGame.Model
+@using RpgGame.Model.Database
+@using RpgGame.Model.Database.Tables
 @using RpgGame.Services
 
 @page "/my-house"
@@ -11,9 +13,9 @@
 
 <h1>@Player.Info!.Name's House</h1>
 
-@if (MyCharacters == null)
+@if (MyCharacters == null || MyInventory == null)
 {
-    <p><em>Loading characters...</em></p>
+    <p><em>Loading house...</em></p>
 }
 else
 {
@@ -32,6 +34,17 @@ else
             </div>
         }
     </div>
+    
+    <h2>Inventory</h2>
+    
+    <div class="inventory">
+        @foreach(var stack in MyInventory)
+        {
+            <div>
+                <InventoryStackCard ItemType="@stack.Type" Quantity="@stack.Quantity" />
+            </div>
+        }
+    </div>
 }
 
 @code {
@@ -41,10 +54,12 @@ else
     [Inject] public CurrentPlayer Player { get; set; } = null!;
 
     private List<Character>? MyCharacters { get; set; }
+    private List<PlayerInventory>? MyInventory { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCharacters();
+        await LoadInventory();
     }
 
     private async Task LoadCharacters()
@@ -52,6 +67,15 @@ else
         await using var db = await DbFactory.CreateDbContextAsync();
 
         MyCharacters = await db.Characters
+            .Where(p => p.OwnerId == Player.Info!.Id)
+            .ToListAsync();
+    }
+
+    private async Task LoadInventory()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        MyInventory = await db.PlayerInventories
             .Where(p => p.OwnerId == Player.Info!.Id)
             .ToListAsync();
     }
@@ -104,38 +128,70 @@ else
         character.Energy--;
 
         // TODO: make your own game! :P
-        var description = Random.Shared.Next(3) switch
+        var adventureResult = Random.Shared.Next(3) switch
         {
-            1 => await SomethingHappens(character),
+            1 => await SomethingHappens(db, character),
             2 => await SomethingAwesomeHappens(character),
             _ => await NothingHappens(character),
         };
 
-        Alert.Show(Modals, "Explore Results", description);
+        Alert.Show(Modals, "Explore Results", adventureResult.Description);
 
         await db.SaveChangesAsync();
 
         await LoadCharacters();
+        
+        if(adventureResult.ShouldReloadInventory)
+        {
+            await LoadInventory();
+        }
     }
 
-    private async Task<string> SomethingHappens(Character character)
+    private async Task<AdventureResults> SomethingHappens(RpgGameDatabase db, Character character)
     {
+        var reward = Random.Shared.Next(new[]
+        {
+            ItemType.Wood,
+            ItemType.Meat,
+            ItemType.Iron
+        });
+
+        var quantity = Random.Shared.Next(2) + 1;
+        
         character.GainExperience(4);
 
-        return $"{character.Name} found something noteworthy! +4 experience points!";
+        await InventoryHelpers.CollectItemAsync(db, Player.Info!.Id, reward, quantity);
+
+        return new AdventureResults()
+        {
+            Description = $"{character.Name} found {quantity}x {reward.GetName()}! +4 experience points!",
+            ShouldReloadInventory = true
+        };
     }
 
-    private async Task<string> SomethingAwesomeHappens(Character character)
+    private async Task<AdventureResults> SomethingAwesomeHappens(Character character)
     {
         character.GainExperience(10);
 
-        return $"{character.Name} found something rad! +10 experience points!";
+        return new AdventureResults()
+        {
+            Description = $"{character.Name} found something rad! +10 experience points!"
+        };
     }
 
-    private async Task<string> NothingHappens(Character character)
+    private async Task<AdventureResults> NothingHappens(Character character)
     {
         character.GainExperience(1);
 
-        return $"{character.Name} went out, but didn't find anything... +1 experience point for the effort.";
+        return new AdventureResults()
+        {
+            Description = $"{character.Name} went out, but didn't find anything... +1 experience point for the effort."
+        };
+    }
+
+    public sealed class AdventureResults
+    {
+        public required string Description { get; init; }
+        public bool ShouldReloadInventory { get; init; }
     }
 }

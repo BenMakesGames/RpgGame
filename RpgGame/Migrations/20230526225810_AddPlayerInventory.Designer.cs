@@ -11,14 +11,14 @@ using RpgGame.Model.Database;
 namespace RpgGame.Migrations
 {
     [DbContext(typeof(RpgGameDatabase))]
-    [Migration("20230322232544_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20230526225810_AddPlayerInventory")]
+    partial class AddPlayerInventory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
 
             modelBuilder.Entity("RpgGame.Database.Tables.Character", b =>
                 {
@@ -71,7 +71,7 @@ namespace RpgGame.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset?>("SignUpDate")
+                    b.Property<DateTimeOffset>("SignUpDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -79,11 +79,44 @@ namespace RpgGame.Migrations
                     b.ToTable("Players");
                 });
 
+            modelBuilder.Entity("RpgGame.Database.Tables.PlayerInventory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("OwnerId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("PlayerInventories");
+                });
+
             modelBuilder.Entity("RpgGame.Database.Tables.Character", b =>
                 {
                     b.HasOne("RpgGame.Database.Tables.Player", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("RpgGame.Database.Tables.PlayerInventory", b =>
+                {
+                    b.HasOne("RpgGame.Database.Tables.Player", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Owner");
                 });

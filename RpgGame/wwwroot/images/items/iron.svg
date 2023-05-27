@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 8.4667 8.4667" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(0 -288.53)" stroke="#000">
+  <path d="m0.74974 294.06 2.5816-2.1714 1.2431 0.0275 0.60813 1.3782v-3e-5l-2.5816 2.1714" fill="#b7b7b7" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <path d="m0.25986 295.46h2.2805l-0.55826-1.4087h-1.2492z" fill="#979797" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <path d="m1.9928 294.09 2.5816-2.1714" fill="none" stroke-width=".26458px"/>
+  <path d="m3.6736 293.98 2.5816-2.1714 1.2431 0.0275 0.60813 1.3782-2.5816 2.1714" fill="#b7b7b7" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <path d="m3.1837 295.39h2.2805l-0.55826-1.4087h-1.2492z" fill="#979797" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <path d="m4.9166 294.01 2.5816-2.1714" fill="none" stroke-width=".26458px"/>
+  <path d="m2.3717 292.12 2.5816-2.1714 1.2431 0.0275 0.60813 1.3782-2.5816 2.1714" fill="#b7b7b7" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <path d="m1.8819 293.53h2.2805l-0.55826-1.4087h-1.2492z" fill="#979797" stroke-linejoin="bevel" stroke-width=".26458"/>
+  <path d="m3.6148 292.15 2.5816-2.1714" fill="none" stroke-width=".26458px"/>
+ </g>
+</svg>
