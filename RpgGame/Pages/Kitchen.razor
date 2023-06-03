@@ -1,0 +1,85 @@
+@page "/kitchen"
+@using RpgGame.Model.Database
+@using RpgGame.Services
+@using Microsoft.EntityFrameworkCore
+@using RpgGame.Dialogs
+@using RpgGame.Functions
+@using RpgGame.Model
+@attribute [Authorize]
+
+<PageTitle>Rpg Game - My House</PageTitle>
+
+<h1>@Player.Info!.Name's House</h1>
+
+<div class="recipes">
+    @foreach(var (name, recipe) in CraftingHelpers.Recipes)
+    {
+        <div>
+            <h4>@name</h4>
+            <p>Ingredients:</p>
+            <ul>
+                @foreach(var (ingredient, amount) in recipe.Ingredients)
+                {
+                    <li>@amount&times; @ingredient.GetName()</li>
+                }
+            </ul>
+            
+            <p>Output:</p>
+            <ul>
+                @foreach(var (ingredient, amount) in recipe.Results)
+                {
+                    <li>@amount&times; @ingredient.GetName()</li>
+                }
+            </ul>
+
+            <button type="button" @onclick="() => DoPrepare(name)">Make It!</button>
+        </div>
+        
+    }
+</div>
+
+@code {
+
+    [CascadingParameter] public IModalService Modals { get; set; } = null!;
+    [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] public CurrentPlayer Player { get; set; } = null!;
+
+    public async Task DoPrepare(string recipeName)
+    {
+        if(!CraftingHelpers.Recipes.TryGetValue(recipeName, out var recipe))
+            return;
+        
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var requiredIngredients = recipe.Ingredients.Keys.ToList();
+
+        var availableIngredients = await db.PlayerInventories
+            .Where(x => x.OwnerId == Player.Info!.Id && requiredIngredients.Contains(x.Type))
+            .ToArrayAsync();
+
+        var canMakeResult = CraftingHelpers.CanMake(recipe, availableIngredients);
+        
+        if(!canMakeResult.CanMake)
+        {
+            Alert.Show(
+                Modals,
+                "Missing Ingredient!",
+                $"The recipe requires {canMakeResult.QuantityRequired}× {canMakeResult.MissingIngredient?.GetName()} but you don't have enough."
+            );
+
+            return;
+        }
+        
+        foreach(var (requiredIngredient, requiredQuantity) in recipe.Ingredients)
+        {
+            availableIngredients.First(x => x.Type == requiredIngredient).Quantity -= requiredQuantity;
+        }
+        
+        foreach(var (result, quantity) in recipe.Results)
+        {
+            await InventoryHelpers.CollectItemAsync(db, Player.Info!.Id, result, quantity);
+        }
+
+        await db.SaveChangesAsync();
+    }
+}
