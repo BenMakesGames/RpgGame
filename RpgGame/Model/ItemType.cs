@@ -8,8 +8,8 @@ public enum ItemType
     Iron = 2,
     
     // crafted
-    Sword = 3, // 1 wood + 1 iron
-    GrilledMeat = 4, // 1 meat + 1 wood
+    Sword = 3,
+    GrilledMeat = 4,
 }
 
 public static class ItemTypeExtensions
