@@ -1,0 +1,21 @@
+.announcements > div {
+    padding: 1rem;
+    background-color: #eee;
+    border-radius: 0.5rem;
+}
+
+.announcements > div + div {
+    margin-top: 1rem;
+}
+
+.announcements header {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.date {
+    margin-left: auto;
+}

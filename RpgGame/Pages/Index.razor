@@ -1,4 +1,8 @@
 ﻿@page "/"
+@using RpgGame.Database.Tables
+@using RpgGame.Database
+@using Microsoft.EntityFrameworkCore
+@using Markdig
 
 <PageTitle>Rpg Game</PageTitle>
 
@@ -15,3 +19,54 @@
         <p>Welcome to my rpg game!</p>
     </NotAuthorized>
 </AuthorizeView>
+
+<h2>Announcements</h2>
+
+@if (Announcements == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (Announcements.Count == 0)
+{
+    <p><em>None</em></p>
+}
+else
+{
+    <div class="announcements">
+        @foreach (var announcement in Announcements)
+        {
+            <div>
+                <header>
+                    <h3>@announcement.Title</h3>
+                    <div class="date">@announcement.CreatedOn.ToString("D")</div>
+                </header>
+
+                <div>@((MarkupString)Markdown.ToHtml(announcement.Body))</div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+
+    private List<Announcement>? Announcements { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAnnouncements();
+    }
+
+    private async Task LoadAnnouncements()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        Announcements = await db.Announcements
+            .OrderByDescending(a => a.Id)
+            .Take(3)
+            .ToListAsync();
+    }
+
+
+}
