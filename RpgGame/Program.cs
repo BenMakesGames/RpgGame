@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using Blazored.Modal;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<CurrentPlayer>();
 builder.Services.AddScoped<RememberMe>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CurrentPlayer>());
+builder.Services.AddSingleton(new HtmlSanitizer());
 // builder.Services.AddScoped<MyCustomService>();
 
 builder.Services.Configure<RazorPagesOptions>(options =>

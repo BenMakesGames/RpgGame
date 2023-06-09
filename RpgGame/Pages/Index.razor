@@ -3,6 +3,7 @@
 @using RpgGame.Database
 @using Microsoft.EntityFrameworkCore
 @using Markdig
+@using Ganss.Xss
 
 <PageTitle>Rpg Game</PageTitle>
 
@@ -41,7 +42,7 @@ else
                     <div class="date">@announcement.CreatedOn.ToString("D")</div>
                 </header>
 
-                <div>@((MarkupString)Markdown.ToHtml(announcement.Body))</div>
+                <div>@((MarkupString)HtmlSanitizer.Sanitize(Markdown.ToHtml(announcement.Body)))</div>
             </div>
         }
     </div>
@@ -50,6 +51,7 @@ else
 @code {
 
     [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
+    [Inject] private HtmlSanitizer HtmlSanitizer { get; set; } = null!;
 
     private List<Announcement>? Announcements { get; set; }
 
