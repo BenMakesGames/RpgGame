@@ -39,6 +39,7 @@ else
     [CascadingParameter] public IModalService Modals { get; set; } = null!;
     [Inject] public IDbContextFactory<RpgGameDatabase> DbFactory { get; set; } = null!;
     [Inject] public CurrentPlayer Player { get; set; } = null!;
+    [Inject] public IJSRuntime JsRuntime { get; set; } = null!;
 
     private List<Character>? MyCharacters { get; set; }
 
@@ -128,6 +129,8 @@ else
     private async Task<string> SomethingAwesomeHappens(Character character)
     {
         character.GainExperience(10);
+
+        await JsRuntime.InvokeVoidAsync("addConfetti");
 
         return $"{character.Name} found something rad! +10 experience points!";
     }
