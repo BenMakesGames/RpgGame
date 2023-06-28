@@ -23,3 +23,7 @@ header > div {
     padding: 0;
     margin-left: auto;
 }
+
+.moon-phase {
+    font-size: 133.3333%;
+}

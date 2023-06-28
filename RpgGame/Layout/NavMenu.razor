@@ -1,7 +1,10 @@
 ﻿@using RpgGame.Services
+@using System.Timers
+@using RpgGame.Functions
 
 <header>
     <div>
+        <div class="moon-phase">@Now.ComputeMoonPhase().ToEmoji()</div>
         <AuthorizeView>
             <Authorized>
                 <div>Hello, @(CurrentPlayer.Info?.Name ?? "friend")!</div>
@@ -13,7 +16,7 @@
             </NotAuthorized>
         </AuthorizeView>
         <button class="hamburger" @onclick="() => DropdownIsOpen = true">
-            <img alt="hamburger menu" src="images/hamburger-menu.svg" width="24" height="24" />
+            <img alt="hamburger menu" src="images/hamburger-menu.svg" width="24" height="24"/>
         </button>
     </div>
 </header>
@@ -25,5 +28,23 @@
     [Inject] public CurrentPlayer CurrentPlayer { get; set; } = null!;
 
     public bool DropdownIsOpen { get; set; }
+
+    public DateTimeOffset Now { get; set; }
+    private Timer? Timer { get; set; }
+
+    override protected async Task OnInitializedAsync()
+    {
+        Now = DateTimeOffset.Now;
+
+        Timer = new(TimeSpan.FromMinutes(1));
+
+        Timer.Elapsed += async (sender, e) =>
+        {
+            Now = DateTimeOffset.Now;
+            await InvokeAsync(StateHasChanged);
+        };
+
+        Timer.Enabled = true;
+    }
 
 }
