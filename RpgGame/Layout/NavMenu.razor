@@ -1,10 +1,11 @@
 ﻿@using RpgGame.Services
 @using System.Timers
+@using BenMakesGames.MoonMath
 @using RpgGame.Functions
 
 <header>
     <div>
-        <div class="moon-phase">@Now.ComputeMoonPhase().ToEmoji()</div>
+        <div class="moon-phase">@Now.GetMoonPhase().ToEmoji()</div>
         <AuthorizeView>
             <Authorized>
                 <div>Hello, @(CurrentPlayer.Info?.Name ?? "friend")!</div>
