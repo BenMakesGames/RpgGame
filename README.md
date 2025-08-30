@@ -1,19 +1,21 @@
 # RpgGame
 
-**Hey, listen!** Videos released on or before May 1, 2023 are built on an earlier version of the code, called PetGame. If you're following along & coding from one of those videos, you may need to adapt a little.  
-
 ## What is it?
 
 RpgGame is a skeleton project for making your own browser-based RPG game! Pet game? Fantasy adventure? Sci-fi empire-builder? I've created a series of YouTube videos to show you how to program new features into RpgGame to make the game you want: https://www.youtube.com/playlist?list=PLMzQZ9sF5S2Har871zlqm9t0nip9OvYDB
 
 RpgGame is written in C#, using Blazor Server and Entity Framework; if you don't know what some of those things are, I explain all the code I write in every video (or as much as I can in 30 minute videos, anyway!)
 
-[![Buy Me a Coffee at ko-fi.com](https://raw.githubusercontent.com/BenMakesGames/AssetsForNuGet/main/buymeacoffee.png)](https://ko-fi.com/A0A12KQ16)
+> [🧚 **Hey, listen!** You can support my development of open-source software on Patreon](https://www.patreon.com/BenMakesGames)
+
+## Notable changes
+* **Aug 19, 2025:** I upgraded RpgGame to .NET 9! That probably won't mess you up if you're following along with any of the videos, except that you should definitely [download the .NET 9 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0), not the .NET 7 one!
+* **May 1, 2023:** I renamed the project from PetGame to RpgGame. If you're following along & coding from a video made before this date, you may need to adapt a little.
 
 ## Installing & Running
 
-1. Install .NET SDK 7
-   * https://dotnet.microsoft.com/en-us/download/dotnet/7.0
+1. Install .NET SDK 9
+   * https://dotnet.microsoft.com/en-us/download/dotnet/9.0
    * Download the "x64" version of the installer; Windows and Mac downloads are available
      ![screenshot of .NET download page, with 64-bit downloads highlighted](!docs/dotnet-download.png)
 2. Download RpgGame!
@@ -34,7 +36,7 @@ If the instructions aren't quite clicking for you, I've created a 12 minute vide
 
 ### Libraries Used
 
-RpgGame leverages several open-source libraries to do some of its work. If you're familiar with C#, but not these libraries, you may want to take a moment to learn about some of them now (search Google, ask ChatGPT, or find tutorials on YouTube). If you're new to C#, it might be a bit much to dive into these; take some time learning the RpgGame code, itself, first.
+RpgGame leverages several open-source libraries to do some of its work. If you're familiar with C#, but not these libraries, you may want to take a moment to learn about some of them now (search Google, ask Claude, or find tutorials on YouTube). If you're new to C#, it might be a bit much to dive into these; take some time learning the RpgGame code, itself, first.
 
 * [Entity Framework](https://learn.microsoft.com/en-us/aspnet/entity-framework), for storing data in a database
 * [Blazored.Modal](https://blazored.github.io/Modal/), for displaying modals
@@ -60,7 +62,7 @@ Here are the most-popular ones for C# (the language RpgGame is written in):
   * Free version available
 * [Rider](https://www.jetbrains.com/rider/) (seen in screenshot, above)
   * Offers more features than Visual Studio, and is less buggy
-  * Must pay to continue using it after 30 days
+  * Free for open-source projects, but otherwise must pay to continue using it after 30 days
 * [vscode](https://code.visualstudio.com/)
   * General-purpose IDE; lacks some features available in Visual Studio and Rider
   * Lower system requirements (Visual Studio and Rider can get slow)
@@ -166,7 +168,7 @@ If you created a new `InventoryItem` table using the instructions above, you may
    ```
    * Again, you can replace `AddMoneyToPlayers` with whatever you want; its a name used to describe the changes.
 4. Finally, run the game! After it starts up, check out the Player table in HeidiSQL; a "Money" column will have appeared.
-   * Note that if you chose a default value for Money, existing players won't get it! There are ways to fix that; Google or ask ChatGPT about "custom SQL in Entity Framework migrations".
+   * Note that if you chose a default value for Money, existing players won't get it! There are ways to fix that; Google or ask Claude about "custom SQL in Entity Framework migrations".
 
 How to display a player's Moneys, or alter it, I'll leave to you. One place to start might be making one of the character "Explore" actions grant money to the player. If you're feeling ready for a bigger challenge, you could try making a new `GroceryStore.razor` page for players to buy items from!
 
